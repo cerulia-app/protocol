@@ -1,0 +1,55 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.rpc.createRuleProfile",
+  "defs": {
+    "main": {
+      "type": "procedure",
+      "description": "Create rule profile.",
+      "input": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "baseRulesetNsid": {
+              "type": "string",
+              "format": "nsid"
+            },
+            "profileTitle": {
+              "type": "string",
+              "maxLength": 640
+            },
+            "scopeKind": {
+              "type": "string",
+              "knownValues": [
+                "house-shared",
+                "campaign-shared"
+              ]
+            },
+            "scopeRef": {
+              "type": "string",
+              "format": "at-uri"
+            },
+            "rulesPatchUri": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": [
+            "baseRulesetNsid",
+            "profileTitle",
+            "scopeKind",
+            "scopeRef",
+            "rulesPatchUri"
+          ]
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "app.cerulia.defs#mutationAck"
+        }
+      }
+    }
+  }
+}

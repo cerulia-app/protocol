@@ -1,0 +1,64 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.rpc.getCharacterBranchView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get character branch owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "characterBranchRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        },
+        "required": [
+          "characterBranchRef"
+        ]
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "#output"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "branch": {
+          "type": "unknown"
+        },
+        "sheet": {
+          "type": "unknown"
+        },
+        "recentSessions": {
+          "type": "unknown"
+        },
+        "advancements": {
+          "type": "unknown"
+        },
+        "conversions": {
+          "type": "unknown"
+        },
+        "branchSummary": {
+          "type": "unknown"
+        },
+        "sheetSummary": {
+          "type": "unknown"
+        },
+        "recentSessionSummaries": {
+          "type": "unknown"
+        },
+        "advancementSummaries": {
+          "type": "unknown"
+        },
+        "conversionSummaries": {
+          "type": "unknown"
+        }
+      }
+    }
+  }
+}

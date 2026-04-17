@@ -1,0 +1,52 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.rpc.getHouseView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get house owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "houseRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        },
+        "required": [
+          "houseRef"
+        ]
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "#output"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "house": {
+          "type": "unknown"
+        },
+        "campaigns": {
+          "type": "unknown"
+        },
+        "sessions": {
+          "type": "unknown"
+        },
+        "houseSummary": {
+          "type": "unknown"
+        },
+        "campaignSummaries": {
+          "type": "unknown"
+        },
+        "sessionSummaries": {
+          "type": "unknown"
+        }
+      }
+    }
+  }
+}

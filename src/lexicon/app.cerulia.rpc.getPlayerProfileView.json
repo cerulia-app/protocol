@@ -1,0 +1,46 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.rpc.getPlayerProfileView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get player profile owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "properties": {
+          "did": {
+            "type": "string",
+            "format": "did"
+          }
+        },
+        "required": [
+          "did"
+        ]
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "ref",
+          "ref": "#output"
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "properties": {
+        "profile": {
+          "type": "unknown"
+        },
+        "blueskyFallbackProfile": {
+          "type": "unknown"
+        },
+        "publicBranches": {
+          "type": "unknown"
+        },
+        "profileSummary": {
+          "type": "unknown"
+        }
+      }
+    }
+  }
+}

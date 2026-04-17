@@ -1,5 +1,22 @@
 {
   "name": "@cerulia/protocol",
   "private": true,
-  "type": "module"
+  "type": "module",
+  "scripts": {
+    "generate": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/generate.ps1",
+    "build": "tsc --noEmit",
+    "check": "tsc --noEmit"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@atproto/lexicon": "^0.4.4",
+    "@atproto/syntax": "^0.3.1",
+    "@atproto/xrpc": "^0.7.4"
+  },
+  "devDependencies": {
+    "@atproto/lex-cli": "^0.9.9",
+    "typescript": "^5.8.3"
+  }
 }
