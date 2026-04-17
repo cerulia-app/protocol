@@ -1,5 +1,6 @@
 export * from './errors.js'
 export * from './codec/lexicon.js'
+export * from './codec/parser.js'
 export * from './codec/validator.js'
 export * from './sdk/client.js'
 
