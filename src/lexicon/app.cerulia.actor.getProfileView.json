@@ -54,7 +54,7 @@
     "branchLink": {
       "type": "object",
       "description": "Link-only branch row for public character detail navigation.",
-      "required": ["characterBranchRef", "displayName", "rulesetNsid"],
+      "required": ["characterBranchRef", "displayName", "branchLabel", "rulesetNsid"],
       "properties": {
         "characterBranchRef": { "type": "string", "format": "at-uri" },
         "displayName": { "type": "string", "maxLength": 640 },

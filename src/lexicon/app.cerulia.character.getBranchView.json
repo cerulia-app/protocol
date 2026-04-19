@@ -125,7 +125,17 @@
       "properties": {
         "fieldId": { "type": "string" },
         "label": { "type": "string", "maxLength": 320 },
-        "value": { "type": "unknown" }
+        "value": { "type": "ref", "ref": "#statValue" }
+      }
+    },
+    "statValue": {
+      "type": "object",
+      "description": "Bounded public stat value shape.",
+      "properties": {
+        "numberValue": { "type": "integer" },
+        "textValue": { "type": "string", "maxLength": 640 },
+        "boolValue": { "type": "boolean" },
+        "enumValue": { "type": "string", "maxLength": 320 }
       }
     }
   }

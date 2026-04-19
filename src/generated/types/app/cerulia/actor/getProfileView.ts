@@ -80,7 +80,7 @@ export interface BranchLink {
   $type?: 'app.cerulia.actor.getProfileView#branchLink'
   characterBranchRef: string
   displayName: string
-  branchLabel?: string
+  branchLabel: string
   rulesetNsid: string
 }
 

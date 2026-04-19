@@ -214,7 +214,7 @@ export interface StatEntry {
   $type?: 'app.cerulia.character.getBranchView#statEntry'
   fieldId: string
   label?: string
-  value: { [_ in string]: unknown }
+  value: StatValue
 }
 
 const hashStatEntry = 'statEntry'
@@ -225,4 +225,23 @@ export function isStatEntry<V>(v: V) {
 
 export function validateStatEntry<V>(v: V) {
   return validate<StatEntry & V>(v, id, hashStatEntry)
+}
+
+/** Bounded public stat value shape. */
+export interface StatValue {
+  $type?: 'app.cerulia.character.getBranchView#statValue'
+  numberValue?: number
+  textValue?: string
+  boolValue?: boolean
+  enumValue?: string
+}
+
+const hashStatValue = 'statValue'
+
+export function isStatValue<V>(v: V) {
+  return is$typed(v, id, hashStatValue)
+}
+
+export function validateStatValue<V>(v: V) {
+  return validate<StatValue & V>(v, id, hashStatValue)
 }

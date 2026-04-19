@@ -151,7 +151,12 @@ export const schemaDict = {
         type: 'object',
         description:
           'Link-only branch row for public character detail navigation.',
-        required: ['characterBranchRef', 'displayName', 'rulesetNsid'],
+        required: [
+          'characterBranchRef',
+          'displayName',
+          'branchLabel',
+          'rulesetNsid',
+        ],
         properties: {
           characterBranchRef: {
             type: 'string',
@@ -1059,7 +1064,28 @@ export const schemaDict = {
             maxLength: 320,
           },
           value: {
-            type: 'unknown',
+            type: 'ref',
+            ref: 'lex:app.cerulia.character.getBranchView#statValue',
+          },
+        },
+      },
+      statValue: {
+        type: 'object',
+        description: 'Bounded public stat value shape.',
+        properties: {
+          numberValue: {
+            type: 'integer',
+          },
+          textValue: {
+            type: 'string',
+            maxLength: 640,
+          },
+          boolValue: {
+            type: 'boolean',
+          },
+          enumValue: {
+            type: 'string',
+            maxLength: 320,
           },
         },
       },
