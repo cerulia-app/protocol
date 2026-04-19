@@ -229,6 +229,7 @@ export function validateStatEntry<V>(v: V) {
 /** Bounded public stat value shape. */
 export interface StatValue {
   $type?: 'app.cerulia.character.getBranchView#statValue'
+  valueKind: 'integer' | 'string' | 'boolean' | 'enum' | (string & {})
   numberValue?: number
   textValue?: string
   boolValue?: boolean

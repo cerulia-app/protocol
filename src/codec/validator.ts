@@ -6,6 +6,8 @@ import { validate } from '../generated/lexicons.js'
 
 const CHARACTER_SHEET_SCHEMA_ID = 'app.cerulia.core.characterSheetSchema'
 const CREATE_SHEET_SCHEMA_ID = 'app.cerulia.rule.createSheetSchema'
+const CREATE_SESSION_ID = 'app.cerulia.session.create'
+const UPDATE_SESSION_ID = 'app.cerulia.session.update'
 
 type FieldDefLike = {
   fieldType?: string
@@ -150,6 +152,55 @@ function applyExtraValidation(
         success: false,
         error: new ValidationError(err),
       }
+    }
+  }
+
+  if (lexiconId === CREATE_SESSION_ID && defId === 'main') {
+    const err = validateSessionInput(value, true)
+    if (err) {
+      return {
+        success: false,
+        error: new ValidationError(err),
+      }
+    }
+  }
+
+  if (lexiconId === UPDATE_SESSION_ID && defId === 'main') {
+    const err = validateSessionInput(value, false)
+    if (err) {
+      return {
+        success: false,
+        error: new ValidationError(err),
+      }
+    }
+  }
+
+  return null
+}
+
+function validateSessionInput(
+  value: unknown,
+  requireScenarioExactlyOne: boolean,
+): string | null {
+  if (!isObject(value)) {
+    return 'session input must be an object'
+  }
+
+  const hasScenarioRef = typeof value.scenarioRef === 'string' && value.scenarioRef.length > 0
+  const hasScenarioLabel = typeof value.scenarioLabel === 'string' && value.scenarioLabel.length > 0
+
+  if (requireScenarioExactlyOne) {
+    if (hasScenarioRef === hasScenarioLabel) {
+      return 'session input must include exactly one of scenarioRef or scenarioLabel'
+    }
+  } else if (hasScenarioRef && hasScenarioLabel) {
+    return 'session update must not include both scenarioRef and scenarioLabel'
+  }
+
+  if (value.role === 'pl') {
+    const hasBranch = typeof value.characterBranchRef === 'string' && value.characterBranchRef.length > 0
+    if (!hasBranch) {
+      return 'session input with role=pl requires characterBranchRef'
     }
   }
 

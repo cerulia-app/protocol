@@ -1069,7 +1069,12 @@ export const schemaDict = {
       statValue: {
         type: 'object',
         description: 'Bounded public stat value shape.',
+        required: ['valueKind'],
         properties: {
+          valueKind: {
+            type: 'string',
+            knownValues: ['integer', 'string', 'boolean', 'enum'],
+          },
           numberValue: {
             type: 'integer',
           },

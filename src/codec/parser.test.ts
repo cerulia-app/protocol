@@ -222,4 +222,55 @@ describe('codec parser/validator', () => {
 
     expect(result.success).toBe(false)
   })
+
+  test('validateById rejects session.create without exactly-one scenario identity', () => {
+    const invalidInput = {
+      role: 'pl',
+      playedAt: '2026-04-18T00:00:00.000Z',
+      characterBranchRef: 'at://did:plc:exampleownerdid1234567890/app.cerulia.core.characterBranch/3lcabcde12345',
+    }
+
+    const result = validateById(
+      invalidInput,
+      'app.cerulia.session.create',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
+
+  test('validateById rejects session.create with role=pl and no characterBranchRef', () => {
+    const invalidInput = {
+      role: 'pl',
+      playedAt: '2026-04-18T00:00:00.000Z',
+      scenarioLabel: 'Missing branch test scenario',
+    }
+
+    const result = validateById(
+      invalidInput,
+      'app.cerulia.session.create',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
+
+  test('validateById rejects session.update with both scenarioRef and scenarioLabel', () => {
+    const invalidInput = {
+      sessionRef: 'at://did:plc:exampleownerdid1234567890/app.cerulia.core.session/3lcabcde12345',
+      scenarioRef: 'at://did:plc:examplescenario/app.cerulia.core.scenario/3lcxyz12345',
+      scenarioLabel: 'Conflicting scenario label',
+    }
+
+    const result = validateById(
+      invalidInput,
+      'app.cerulia.session.update',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
 })
