@@ -105,6 +105,7 @@ export const schemaDict = {
             type: 'array',
             items: {
               type: 'string',
+              knownValues: ['text', 'semi-text', 'voice', 'offline'],
             },
           },
           tools: {
@@ -250,6 +251,7 @@ export const schemaDict = {
                 type: 'array',
                 items: {
                   type: 'string',
+                  knownValues: ['text', 'semi-text', 'voice', 'offline'],
                 },
               },
               tools: {

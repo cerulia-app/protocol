@@ -157,4 +157,69 @@ describe('codec parser/validator', () => {
 
     expect(result.success).toBe(false)
   })
+
+  test('validateById rejects additionalFieldDef on non-extensible group', () => {
+    const invalidSchema = {
+      $type: 'app.cerulia.core.characterSheetSchema',
+      baseRulesetNsid: 'app.cerulia.ruleset.coc7',
+      schemaVersion: '1.0.0',
+      title: 'Invalid additionalFieldDef parent',
+      ownerDid: 'did:plc:exampleownerdid1234567890',
+      createdAt: '2026-04-18T00:00:00.000Z',
+      fieldDefs: [
+        {
+          fieldId: 'section',
+          label: 'Section',
+          fieldType: 'group',
+          required: false,
+          additionalFieldDef: {
+            fieldId: 'extra',
+            label: 'Extra',
+            fieldType: 'string',
+            required: false,
+          },
+        },
+      ],
+    }
+
+    const result = validateById(
+      invalidSchema,
+      'app.cerulia.core.characterSheetSchema',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
+
+  test('validateById rejects invalid createSheetSchema input fieldDefs', () => {
+    const invalidInput = {
+      baseRulesetNsid: 'app.cerulia.ruleset.coc7',
+      schemaVersion: '1.0.0',
+      title: 'Invalid create input',
+      fieldDefs: [
+        {
+          fieldId: 'name',
+          label: 'Name',
+          fieldType: 'string',
+          required: true,
+          itemDef: {
+            fieldId: 'illegal-item',
+            label: 'Illegal',
+            fieldType: 'string',
+            required: false,
+          },
+        },
+      ],
+    }
+
+    const result = validateById(
+      invalidInput,
+      'app.cerulia.rule.createSheetSchema',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
 })

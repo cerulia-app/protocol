@@ -55,7 +55,7 @@ export interface ProfileSummary {
   website?: string
   pronouns?: string
   roleDistribution?: number
-  playFormats?: string[]
+  playFormats?: ('text' | 'semi-text' | 'voice' | 'offline' | (string & {}))[]
   tools?: string[]
   ownedRulebooks?: string
   playableTimeSummary?: string

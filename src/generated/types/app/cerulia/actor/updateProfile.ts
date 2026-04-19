@@ -27,7 +27,7 @@ export interface InputSchema {
   websiteOverride?: string
   pronounsOverride?: string
   roleDistribution?: number
-  playFormats?: string[]
+  playFormats?: ('text' | 'semi-text' | 'voice' | 'offline' | (string & {}))[]
   tools?: string[]
   ownedRulebooks?: string
   playableTimeSummary?: string

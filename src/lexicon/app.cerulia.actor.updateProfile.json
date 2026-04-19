@@ -44,7 +44,13 @@
             "playFormats": {
               "type": "array",
               "items": {
-                "type": "string"
+                "type": "string",
+                "knownValues": [
+                  "text",
+                  "semi-text",
+                  "voice",
+                  "offline"
+                ]
               }
             },
             "tools": {

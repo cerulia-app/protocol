@@ -5,6 +5,7 @@ import {
 import { validate } from '../generated/lexicons.js'
 
 const CHARACTER_SHEET_SCHEMA_ID = 'app.cerulia.core.characterSheetSchema'
+const CREATE_SHEET_SCHEMA_ID = 'app.cerulia.rule.createSheetSchema'
 
 type FieldDefLike = {
   fieldType?: string
@@ -51,6 +52,10 @@ function validateFieldDefNode(
   }
 
   if (isObject(fieldDef.additionalFieldDef)) {
+    if (fieldType !== 'group' || fieldDef.extensible !== true) {
+      return `${path}.additionalFieldDef is only allowed on extensible group fields`
+    }
+
     if ((fieldDef.additionalFieldDef as FieldDefLike).extensible === true) {
       return `${path}.additionalFieldDef must not be extensible`
     }
@@ -129,6 +134,16 @@ function applyExtraValidation(
   defId: string,
 ): ValidationResult | null {
   if (lexiconId === CHARACTER_SHEET_SCHEMA_ID && defId === 'main') {
+    const err = validateCharacterSheetSchemaFieldDefs(value)
+    if (err) {
+      return {
+        success: false,
+        error: new ValidationError(err),
+      }
+    }
+  }
+
+  if (lexiconId === CREATE_SHEET_SCHEMA_ID && defId === 'main') {
     const err = validateCharacterSheetSchemaFieldDefs(value)
     if (err) {
       return {

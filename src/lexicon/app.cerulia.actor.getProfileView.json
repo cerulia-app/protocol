@@ -41,7 +41,13 @@
         "website": { "type": "string", "format": "uri" },
         "pronouns": { "type": "string", "maxLength": 100 },
         "roleDistribution": { "type": "integer", "minimum": 0, "maximum": 100 },
-        "playFormats": { "type": "array", "items": { "type": "string" } },
+        "playFormats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "knownValues": ["text", "semi-text", "voice", "offline"]
+          }
+        },
         "tools": { "type": "array", "items": { "type": "string" } },
         "ownedRulebooks": { "type": "string", "maxLength": 3000 },
         "playableTimeSummary": { "type": "string", "maxLength": 3000 },
