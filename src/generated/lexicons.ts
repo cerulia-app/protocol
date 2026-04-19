@@ -832,7 +832,6 @@ export const schemaDict = {
           'branchRef',
           'branchLabel',
           'branchKind',
-          'baseSheetRef',
           'visibility',
           'revision',
         ],
@@ -848,10 +847,6 @@ export const schemaDict = {
           branchKind: {
             type: 'string',
             knownValues: ['main', 'campaign-fork', 'local-override'],
-          },
-          baseSheetRef: {
-            type: 'string',
-            format: 'at-uri',
           },
           visibility: {
             type: 'string',

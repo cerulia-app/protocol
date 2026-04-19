@@ -64,7 +64,6 @@ export interface BranchSummary {
   branchRef: string
   branchLabel: string
   branchKind: 'main' | 'campaign-fork' | 'local-override' | (string & {})
-  baseSheetRef: string
   visibility: 'draft' | 'public' | (string & {})
   revision: number
   updatedAt?: string

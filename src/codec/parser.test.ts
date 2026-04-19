@@ -87,4 +87,74 @@ describe('codec parser/validator', () => {
 
     expect(result.success).toBe(false)
   })
+
+  test('validateById rejects scalar field with children', () => {
+    const invalidSchema = {
+      $type: 'app.cerulia.core.characterSheetSchema',
+      baseRulesetNsid: 'app.cerulia.ruleset.coc7',
+      schemaVersion: '1.0.0',
+      title: 'Invalid scalar children schema',
+      ownerDid: 'did:plc:exampleownerdid1234567890',
+      createdAt: '2026-04-18T00:00:00.000Z',
+      fieldDefs: [
+        {
+          fieldId: 'hp',
+          label: 'HP',
+          fieldType: 'integer',
+          required: true,
+          children: [
+            {
+              fieldId: 'illegal-child',
+              label: 'Illegal',
+              fieldType: 'integer',
+              required: false,
+            },
+          ],
+        },
+      ],
+    }
+
+    const result = validateById(
+      invalidSchema,
+      'app.cerulia.core.characterSheetSchema',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
+
+  test('validateById rejects non-array field with itemDef', () => {
+    const invalidSchema = {
+      $type: 'app.cerulia.core.characterSheetSchema',
+      baseRulesetNsid: 'app.cerulia.ruleset.coc7',
+      schemaVersion: '1.0.0',
+      title: 'Invalid itemDef schema',
+      ownerDid: 'did:plc:exampleownerdid1234567890',
+      createdAt: '2026-04-18T00:00:00.000Z',
+      fieldDefs: [
+        {
+          fieldId: 'name',
+          label: 'Name',
+          fieldType: 'string',
+          required: true,
+          itemDef: {
+            fieldId: 'illegal-item',
+            label: 'Illegal',
+            fieldType: 'string',
+            required: false,
+          },
+        },
+      ],
+    }
+
+    const result = validateById(
+      invalidSchema,
+      'app.cerulia.core.characterSheetSchema',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
 })

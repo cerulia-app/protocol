@@ -34,6 +34,18 @@ function validateFieldDefNode(
   const fieldDef = node as FieldDefLike
   const fieldType = fieldDef.fieldType
 
+  const children = Array.isArray(fieldDef.children) ? fieldDef.children : null
+  const hasChildren = children !== null
+  const hasItemDef = isObject(fieldDef.itemDef)
+
+  if (hasChildren && fieldType !== 'group' && fieldType !== 'array') {
+    return `${path}.children is only allowed on group or array fields`
+  }
+
+  if (hasItemDef && fieldType !== 'array') {
+    return `${path}.itemDef is only allowed on array fields`
+  }
+
   if (fieldDef.extensible === true && fieldType !== 'group') {
     return `${path}.extensible is only allowed on group fields`
   }
@@ -51,10 +63,10 @@ function validateFieldDefNode(
     }
   }
 
-  if (Array.isArray(fieldDef.children)) {
-    for (let i = 0; i < fieldDef.children.length; i += 1) {
+  if (hasChildren) {
+    for (let i = 0; i < children.length; i += 1) {
       const err = validateFieldDefNode(
-        fieldDef.children[i],
+        children[i],
         depth + 1,
         `${path}.children[${i}]`,
       )
@@ -64,7 +76,7 @@ function validateFieldDefNode(
     }
   }
 
-  if (isObject(fieldDef.itemDef)) {
+  if (hasItemDef) {
     const err = validateFieldDefNode(
       fieldDef.itemDef,
       depth + 1,

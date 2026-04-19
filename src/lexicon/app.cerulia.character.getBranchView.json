@@ -37,12 +37,11 @@
     "branchSummary": {
       "type": "object",
       "description": "Public-safe branch display fields. Excludes overridePayload and owner-only linkage.",
-      "required": ["branchRef", "branchLabel", "branchKind", "baseSheetRef", "visibility", "revision"],
+      "required": ["branchRef", "branchLabel", "branchKind", "visibility", "revision"],
       "properties": {
         "branchRef": { "type": "string", "format": "at-uri" },
         "branchLabel": { "type": "string", "maxLength": 640 },
         "branchKind": { "type": "string", "knownValues": ["main", "campaign-fork", "local-override"] },
-        "baseSheetRef": { "type": "string", "format": "at-uri" },
         "visibility": { "type": "string", "knownValues": ["draft", "public"] },
         "revision": { "type": "integer", "minimum": 1 },
         "updatedAt": { "type": "string", "format": "datetime" }
