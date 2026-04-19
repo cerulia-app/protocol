@@ -86,7 +86,6 @@ export interface SheetSummary {
   sheetRef: string
   displayName: string
   rulesetNsid: string
-  stats?: { [_ in string]: unknown }
   portraitBlob?: BlobRef
   profileSummary?: string
 }

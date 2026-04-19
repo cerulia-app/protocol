@@ -56,7 +56,6 @@
         "sheetRef": { "type": "string", "format": "at-uri" },
         "displayName": { "type": "string", "maxLength": 640 },
         "rulesetNsid": { "type": "string", "format": "nsid" },
-        "stats": { "type": "unknown" },
         "portraitBlob": { "type": "blob" },
         "profileSummary": { "type": "string", "maxLength": 3000 }
       }

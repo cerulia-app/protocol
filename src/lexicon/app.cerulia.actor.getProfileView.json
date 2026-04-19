@@ -24,7 +24,7 @@
             "blueskyFallbackProfile": { "type": "ref", "ref": "#fallbackProfile", "description": "Bluesky fallback profile fields for owner-side comparison. Present in owner mode only." },
             "publicBranches": { "type": "array", "items": { "type": "ref", "ref": "#branchListItem" }, "description": "Branch list items. Present in owner mode only." },
             "profileSummary": { "type": "ref", "ref": "#profileSummary", "description": "Composed public-safe profile summary. Present in public/anonymous mode only." },
-            "publicBranchLinks": { "type": "array", "items": { "type": "ref", "ref": "#branchLink" }, "description": "Link-only branch rows for public character detail navigation. Present in public/anonymous mode only." }
+            "publicBranches": { "type": "array", "items": { "type": "ref", "ref": "#branchLink" }, "description": "Link-only branch rows for public character detail navigation. Present in public/anonymous mode only." }
           }
         }
       }
@@ -89,9 +89,9 @@
     "branchLink": {
       "type": "object",
       "description": "Link-only branch row for public character detail navigation.",
-      "required": ["branchRef", "displayName", "rulesetNsid"],
+      "required": ["characterBranchRef", "displayName", "rulesetNsid"],
       "properties": {
-        "branchRef": { "type": "string", "format": "at-uri" },
+        "characterBranchRef": { "type": "string", "format": "at-uri" },
         "displayName": { "type": "string", "maxLength": 640 },
         "branchLabel": { "type": "string", "maxLength": 640 },
         "rulesetNsid": { "type": "string", "format": "nsid" }

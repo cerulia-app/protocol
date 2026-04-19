@@ -24,11 +24,9 @@ export type InputSchema = undefined
 export interface OutputSchema {
   profile?: AppCeruliaCorePlayerProfile.Main
   blueskyFallbackProfile?: FallbackProfile
-  /** Branch list items. Present in owner mode only. */
-  publicBranches?: BranchListItem[]
-  profileSummary?: ProfileSummary
   /** Link-only branch rows for public character detail navigation. Present in public/anonymous mode only. */
-  publicBranchLinks?: BranchLink[]
+  publicBranches?: BranchLink[]
+  profileSummary?: ProfileSummary
 }
 
 export interface CallOptions {
@@ -101,7 +99,7 @@ export function validateProfileSummary<V>(v: V) {
 /** Link-only branch row for public character detail navigation. */
 export interface BranchLink {
   $type?: 'app.cerulia.actor.getProfileView#branchLink'
-  branchRef: string
+  characterBranchRef: string
   displayName: string
   branchLabel?: string
   rulesetNsid: string

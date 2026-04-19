@@ -49,24 +49,16 @@ export const schemaDict = {
                 type: 'array',
                 items: {
                   type: 'ref',
-                  ref: 'lex:app.cerulia.actor.getProfileView#branchListItem',
+                  ref: 'lex:app.cerulia.actor.getProfileView#branchLink',
                 },
-                description: 'Branch list items. Present in owner mode only.',
+                description:
+                  'Link-only branch rows for public character detail navigation. Present in public/anonymous mode only.',
               },
               profileSummary: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.actor.getProfileView#profileSummary',
                 description:
                   'Composed public-safe profile summary. Present in public/anonymous mode only.',
-              },
-              publicBranchLinks: {
-                type: 'array',
-                items: {
-                  type: 'ref',
-                  ref: 'lex:app.cerulia.actor.getProfileView#branchLink',
-                },
-                description:
-                  'Link-only branch rows for public character detail navigation. Present in public/anonymous mode only.',
               },
             },
           },
@@ -200,9 +192,9 @@ export const schemaDict = {
         type: 'object',
         description:
           'Link-only branch row for public character detail navigation.',
-        required: ['branchRef', 'displayName', 'rulesetNsid'],
+        required: ['characterBranchRef', 'displayName', 'rulesetNsid'],
         properties: {
-          branchRef: {
+          characterBranchRef: {
             type: 'string',
             format: 'at-uri',
           },
@@ -927,9 +919,6 @@ export const schemaDict = {
           rulesetNsid: {
             type: 'string',
             format: 'nsid',
-          },
-          stats: {
-            type: 'unknown',
           },
           portraitBlob: {
             type: 'blob',
