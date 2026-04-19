@@ -51,6 +51,7 @@ export interface SessionSummary {
   hoLabel?: string
   hoSummary?: string
   outcomeSummary?: string
+  visibility: 'draft' | 'public' | (string & {})
   externalArchiveUris?: string[]
 }
 

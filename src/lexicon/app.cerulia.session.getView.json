@@ -38,7 +38,7 @@
     "sessionSummary": {
       "type": "object",
       "description": "Public-safe session summary. Excludes note and characterBranchRef.",
-      "required": ["sessionRef", "role", "playedAt"],
+      "required": ["sessionRef", "role", "playedAt", "visibility"],
       "properties": {
         "sessionRef": { "type": "string", "format": "at-uri" },
         "role": { "type": "string", "knownValues": ["pl", "gm"] },
@@ -47,6 +47,7 @@
         "hoLabel": { "type": "string", "maxLength": 640 },
         "hoSummary": { "type": "string", "maxLength": 3000 },
         "outcomeSummary": { "type": "string", "maxLength": 3000 },
+        "visibility": { "type": "string", "knownValues": ["draft", "public"] },
         "externalArchiveUris": {
           "type": "array",
           "items": { "type": "string", "format": "uri" }

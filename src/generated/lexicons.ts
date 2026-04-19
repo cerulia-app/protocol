@@ -3548,7 +3548,7 @@ export const schemaDict = {
         type: 'object',
         description:
           'Public-safe session summary. Excludes note and characterBranchRef.',
-        required: ['sessionRef', 'role', 'playedAt'],
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
         properties: {
           sessionRef: {
             type: 'string',
@@ -3577,6 +3577,10 @@ export const schemaDict = {
           outcomeSummary: {
             type: 'string',
             maxLength: 3000,
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
           },
           externalArchiveUris: {
             type: 'array',
