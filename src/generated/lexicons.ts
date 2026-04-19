@@ -39,6 +39,12 @@ export const schemaDict = {
                 description:
                   'Full player profile record. Present in owner mode only.',
               },
+              blueskyFallbackProfile: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.actor.getProfileView#fallbackProfile',
+                description:
+                  'Bluesky fallback profile fields for owner-side comparison. Present in owner mode only.',
+              },
               publicBranches: {
                 type: 'array',
                 items: {
@@ -125,6 +131,12 @@ export const schemaDict = {
             type: 'string',
             maxLength: 3000,
           },
+          avatar: {
+            type: 'blob',
+          },
+          banner: {
+            type: 'blob',
+          },
           website: {
             type: 'string',
             format: 'uri',
@@ -205,6 +217,31 @@ export const schemaDict = {
           rulesetNsid: {
             type: 'string',
             format: 'nsid',
+          },
+        },
+      },
+      fallbackProfile: {
+        type: 'object',
+        description:
+          'Owner-visible fallback profile fields resolved from app.bsky.actor.profile.',
+        properties: {
+          displayName: {
+            type: 'string',
+            maxLength: 640,
+          },
+          description: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          avatar: {
+            type: 'blob',
+          },
+          banner: {
+            type: 'blob',
+          },
+          website: {
+            type: 'string',
+            format: 'uri',
           },
         },
       },
@@ -876,8 +913,7 @@ export const schemaDict = {
       },
       sheetSummary: {
         type: 'object',
-        description:
-          'Public-safe sheet display fields. Excludes stats payload and internal fields.',
+        description: 'Public-safe sheet display fields.',
         required: ['sheetRef', 'displayName', 'rulesetNsid'],
         properties: {
           sheetRef: {
@@ -891,6 +927,9 @@ export const schemaDict = {
           rulesetNsid: {
             type: 'string',
             format: 'nsid',
+          },
+          stats: {
+            type: 'unknown',
           },
           portraitBlob: {
             type: 'blob',
@@ -1334,11 +1373,17 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['characterBranchRef'],
+            required: ['characterBranchRef', 'expectedRevision'],
             properties: {
               characterBranchRef: {
                 type: 'string',
                 format: 'at-uri',
+              },
+              expectedRevision: {
+                type: 'integer',
+                minimum: 1,
+                description:
+                  'Revision the client based the retire operation on. Used to detect write conflicts and return rebase-needed.',
               },
             },
           },
@@ -1878,12 +1923,12 @@ export const schemaDict = {
             type: 'array',
             items: {
               type: 'ref',
-              ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefLeaf',
+              ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
             },
           },
           itemDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefLeaf',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
           valueRange: {
             type: 'unknown',
@@ -1899,7 +1944,7 @@ export const schemaDict = {
           },
           additionalFieldDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefLeaf',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
         },
         required: ['fieldId', 'label', 'fieldType', 'required'],
@@ -1934,7 +1979,7 @@ export const schemaDict = {
           },
           itemDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefLeaf',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
           valueRange: {
             type: 'unknown',
@@ -1950,7 +1995,7 @@ export const schemaDict = {
           },
           additionalFieldDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefLeaf',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
         },
         required: ['fieldId', 'label', 'fieldType', 'required'],
@@ -3090,7 +3135,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get scenario summary view.',
+        description:
+          'Get scenario owner/public view. Owner mode can return raw record fields. Public/anonymous mode returns summary fields.',
         parameters: {
           type: 'params',
           required: ['scenarioRef'],
@@ -3105,13 +3151,46 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['scenario'],
             properties: {
               scenario: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.scenario',
+                description:
+                  'Full scenario record. Present in owner mode only.',
+              },
+              scenarioSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.scenario.getView#scenarioSummary',
+                description:
+                  'Public-safe scenario summary. Present in public/anonymous mode only.',
               },
             },
+          },
+        },
+      },
+      scenarioSummary: {
+        type: 'object',
+        required: ['scenarioRef', 'title'],
+        properties: {
+          scenarioRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          summary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          sourceCitationUri: {
+            type: 'string',
+            format: 'uri',
           },
         },
       },
@@ -3319,7 +3398,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get session view.',
+        description:
+          'Get session owner/public projection. Owner mode returns raw record fields. Public/anonymous mode returns summary fields only.',
         parameters: {
           type: 'params',
           required: ['sessionRef'],
@@ -3334,12 +3414,61 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['session'],
             properties: {
               session: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.session',
+                description: 'Full session record. Present in owner mode only.',
               },
+              sessionSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.session.getView#sessionSummary',
+                description:
+                  'Public-safe session summary. Present in public/anonymous mode only.',
+              },
+            },
+          },
+        },
+      },
+      sessionSummary: {
+        type: 'object',
+        description:
+          'Public-safe session summary. Excludes note and characterBranchRef.',
+        required: ['sessionRef', 'role', 'playedAt'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          outcomeSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          externalArchiveUris: {
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'uri',
             },
           },
         },

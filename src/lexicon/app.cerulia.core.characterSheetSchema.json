@@ -106,12 +106,12 @@
           "type": "array",
           "items": {
             "type": "ref",
-            "ref": "#fieldDefLeaf"
+            "ref": "#fieldDefNode"
           }
         },
         "itemDef": {
           "type": "ref",
-          "ref": "#fieldDefLeaf"
+          "ref": "#fieldDefNode"
         },
         "valueRange": {
           "type": "unknown"
@@ -127,7 +127,7 @@
         },
         "additionalFieldDef": {
           "type": "ref",
-          "ref": "#fieldDefLeaf"
+          "ref": "#fieldDefNode"
         }
       },
       "required": [
@@ -167,7 +167,7 @@
         },
         "itemDef": {
           "type": "ref",
-          "ref": "#fieldDefLeaf"
+          "ref": "#fieldDefNode"
         },
         "valueRange": {
           "type": "unknown"
@@ -183,7 +183,7 @@
         },
         "additionalFieldDef": {
           "type": "ref",
-          "ref": "#fieldDefLeaf"
+          "ref": "#fieldDefNode"
         }
       },
       "required": [

@@ -20,6 +20,8 @@ export type QueryParams = {}
 
 export interface InputSchema {
   characterBranchRef: string
+  /** Revision the client based the retire operation on. Used to detect write conflicts and return rebase-needed. */
+  expectedRevision: number
 }
 
 export type OutputSchema = AppCeruliaDefs.MutationAck

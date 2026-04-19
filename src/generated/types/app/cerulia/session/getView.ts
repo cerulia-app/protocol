@@ -22,7 +22,8 @@ export type QueryParams = {
 export type InputSchema = undefined
 
 export interface OutputSchema {
-  session: AppCeruliaCoreSession.Main
+  session?: AppCeruliaCoreSession.Main
+  sessionSummary?: SessionSummary
 }
 
 export interface CallOptions {
@@ -38,4 +39,27 @@ export interface Response {
 
 export function toKnownErr(e: any) {
   return e
+}
+
+/** Public-safe session summary. Excludes note and characterBranchRef. */
+export interface SessionSummary {
+  $type?: 'app.cerulia.session.getView#sessionSummary'
+  sessionRef: string
+  role: 'pl' | 'gm' | (string & {})
+  playedAt: string
+  scenarioLabel?: string
+  hoLabel?: string
+  hoSummary?: string
+  outcomeSummary?: string
+  externalArchiveUris?: string[]
+}
+
+const hashSessionSummary = 'sessionSummary'
+
+export function isSessionSummary<V>(v: V) {
+  return is$typed(v, id, hashSessionSummary)
+}
+
+export function validateSessionSummary<V>(v: V) {
+  return validate<SessionSummary & V>(v, id, hashSessionSummary)
 }

@@ -80,12 +80,13 @@ export function validateBranchSummary<V>(v: V) {
   return validate<BranchSummary & V>(v, id, hashBranchSummary)
 }
 
-/** Public-safe sheet display fields. Excludes stats payload and internal fields. */
+/** Public-safe sheet display fields. */
 export interface SheetSummary {
   $type?: 'app.cerulia.character.getBranchView#sheetSummary'
   sheetRef: string
   displayName: string
   rulesetNsid: string
+  stats?: { [_ in string]: unknown }
   portraitBlob?: BlobRef
   profileSummary?: string
 }

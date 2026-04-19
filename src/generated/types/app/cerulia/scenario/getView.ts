@@ -22,7 +22,8 @@ export type QueryParams = {
 export type InputSchema = undefined
 
 export interface OutputSchema {
-  scenario: AppCeruliaCoreScenario.Main
+  scenario?: AppCeruliaCoreScenario.Main
+  scenarioSummary?: ScenarioSummary
 }
 
 export interface CallOptions {
@@ -38,4 +39,23 @@ export interface Response {
 
 export function toKnownErr(e: any) {
   return e
+}
+
+export interface ScenarioSummary {
+  $type?: 'app.cerulia.scenario.getView#scenarioSummary'
+  scenarioRef: string
+  title: string
+  rulesetNsid?: string
+  summary?: string
+  sourceCitationUri?: string
+}
+
+const hashScenarioSummary = 'scenarioSummary'
+
+export function isScenarioSummary<V>(v: V) {
+  return is$typed(v, id, hashScenarioSummary)
+}
+
+export function validateScenarioSummary<V>(v: V) {
+  return validate<ScenarioSummary & V>(v, id, hashScenarioSummary)
 }

@@ -21,6 +21,7 @@
           "type": "object",
           "properties": {
             "profile": { "type": "ref", "ref": "app.cerulia.core.playerProfile", "description": "Full player profile record. Present in owner mode only." },
+            "blueskyFallbackProfile": { "type": "ref", "ref": "#fallbackProfile", "description": "Bluesky fallback profile fields for owner-side comparison. Present in owner mode only." },
             "publicBranches": { "type": "array", "items": { "type": "ref", "ref": "#branchListItem" }, "description": "Branch list items. Present in owner mode only." },
             "profileSummary": { "type": "ref", "ref": "#profileSummary", "description": "Composed public-safe profile summary. Present in public/anonymous mode only." },
             "publicBranchLinks": { "type": "array", "items": { "type": "ref", "ref": "#branchLink" }, "description": "Link-only branch rows for public character detail navigation. Present in public/anonymous mode only." }
@@ -70,6 +71,8 @@
         "did": { "type": "string", "format": "did" },
         "displayName": { "type": "string", "maxLength": 640 },
         "description": { "type": "string", "maxLength": 3000 },
+        "avatar": { "type": "blob" },
+        "banner": { "type": "blob" },
         "website": { "type": "string", "format": "uri" },
         "pronouns": { "type": "string", "maxLength": 100 },
         "roleDistribution": { "type": "integer", "minimum": 0, "maximum": 100 },
@@ -92,6 +95,17 @@
         "displayName": { "type": "string", "maxLength": 640 },
         "branchLabel": { "type": "string", "maxLength": 640 },
         "rulesetNsid": { "type": "string", "format": "nsid" }
+      }
+    },
+    "fallbackProfile": {
+      "type": "object",
+      "description": "Owner-visible fallback profile fields resolved from app.bsky.actor.profile.",
+      "properties": {
+        "displayName": { "type": "string", "maxLength": 640 },
+        "description": { "type": "string", "maxLength": 3000 },
+        "avatar": { "type": "blob" },
+        "banner": { "type": "blob" },
+        "website": { "type": "string", "format": "uri" }
       }
     }
   }

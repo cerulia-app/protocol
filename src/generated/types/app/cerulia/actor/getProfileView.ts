@@ -23,6 +23,7 @@ export type InputSchema = undefined
 
 export interface OutputSchema {
   profile?: AppCeruliaCorePlayerProfile.Main
+  blueskyFallbackProfile?: FallbackProfile
   /** Branch list items. Present in owner mode only. */
   publicBranches?: BranchListItem[]
   profileSummary?: ProfileSummary
@@ -72,6 +73,8 @@ export interface ProfileSummary {
   did: string
   displayName?: string
   description?: string
+  avatar?: BlobRef
+  banner?: BlobRef
   website?: string
   pronouns?: string
   roleDistribution?: number
@@ -112,4 +115,24 @@ export function isBranchLink<V>(v: V) {
 
 export function validateBranchLink<V>(v: V) {
   return validate<BranchLink & V>(v, id, hashBranchLink)
+}
+
+/** Owner-visible fallback profile fields resolved from app.bsky.actor.profile. */
+export interface FallbackProfile {
+  $type?: 'app.cerulia.actor.getProfileView#fallbackProfile'
+  displayName?: string
+  description?: string
+  avatar?: BlobRef
+  banner?: BlobRef
+  website?: string
+}
+
+const hashFallbackProfile = 'fallbackProfile'
+
+export function isFallbackProfile<V>(v: V) {
+  return is$typed(v, id, hashFallbackProfile)
+}
+
+export function validateFallbackProfile<V>(v: V) {
+  return validate<FallbackProfile & V>(v, id, hashFallbackProfile)
 }

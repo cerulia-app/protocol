@@ -9,11 +9,16 @@
         "encoding": "application/json",
         "schema": {
           "type": "object",
-          "required": ["characterBranchRef"],
+          "required": ["characterBranchRef", "expectedRevision"],
           "properties": {
             "characterBranchRef": {
               "type": "string",
               "format": "at-uri"
+            },
+            "expectedRevision": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Revision the client based the retire operation on. Used to detect write conflicts and return rebase-needed."
             }
           }
         }

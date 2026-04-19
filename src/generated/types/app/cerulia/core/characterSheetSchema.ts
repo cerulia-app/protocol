@@ -73,13 +73,13 @@ export interface FieldDefNode {
     | 'group'
     | 'array'
     | (string & {})
-  children?: FieldDefLeaf[]
-  itemDef?: FieldDefLeaf
+  children?: FieldDefNode[]
+  itemDef?: FieldDefNode
   valueRange?: { [_ in string]: unknown }
   required: boolean
   description?: string
   extensible?: boolean
-  additionalFieldDef?: FieldDefLeaf
+  additionalFieldDef?: FieldDefNode
 }
 
 const hashFieldDefNode = 'fieldDefNode'
@@ -105,12 +105,12 @@ export interface FieldDefRoot {
     | 'array'
     | (string & {})
   children?: FieldDefNode[]
-  itemDef?: FieldDefLeaf
+  itemDef?: FieldDefNode
   valueRange?: { [_ in string]: unknown }
   required: boolean
   description?: string
   extensible?: boolean
-  additionalFieldDef?: FieldDefLeaf
+  additionalFieldDef?: FieldDefNode
 }
 
 const hashFieldDefRoot = 'fieldDefRoot'

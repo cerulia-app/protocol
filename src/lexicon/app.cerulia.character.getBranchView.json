@@ -50,12 +50,13 @@
     },
     "sheetSummary": {
       "type": "object",
-      "description": "Public-safe sheet display fields. Excludes stats payload and internal fields.",
+      "description": "Public-safe sheet display fields.",
       "required": ["sheetRef", "displayName", "rulesetNsid"],
       "properties": {
         "sheetRef": { "type": "string", "format": "at-uri" },
         "displayName": { "type": "string", "maxLength": 640 },
         "rulesetNsid": { "type": "string", "format": "nsid" },
+        "stats": { "type": "unknown" },
         "portraitBlob": { "type": "blob" },
         "profileSummary": { "type": "string", "maxLength": 3000 }
       }

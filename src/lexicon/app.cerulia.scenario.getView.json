@@ -4,7 +4,7 @@
   "defs": {
     "main": {
       "type": "query",
-      "description": "Get scenario summary view.",
+      "description": "Get scenario owner/public view. Owner mode can return raw record fields. Public/anonymous mode returns summary fields.",
       "parameters": {
         "type": "params",
         "required": ["scenarioRef"],
@@ -19,14 +19,31 @@
         "encoding": "application/json",
         "schema": {
           "type": "object",
-          "required": ["scenario"],
           "properties": {
             "scenario": {
               "type": "ref",
-              "ref": "app.cerulia.core.scenario"
+              "ref": "app.cerulia.core.scenario",
+              "description": "Full scenario record. Present in owner mode only."
+            },
+            "scenarioSummary": {
+              "type": "ref",
+              "ref": "#scenarioSummary",
+              "description": "Public-safe scenario summary. Present in public/anonymous mode only."
             }
           }
         }
+      }
+    }
+    ,
+    "scenarioSummary": {
+      "type": "object",
+      "required": ["scenarioRef", "title"],
+      "properties": {
+        "scenarioRef": { "type": "string", "format": "at-uri" },
+        "title": { "type": "string", "maxLength": 640 },
+        "rulesetNsid": { "type": "string", "format": "nsid" },
+        "summary": { "type": "string", "maxLength": 3000 },
+        "sourceCitationUri": { "type": "string", "format": "uri" }
       }
     }
   }
