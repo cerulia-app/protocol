@@ -65,7 +65,8 @@
           ]
         },
         "valueRange": {
-          "type": "unknown"
+          "type": "ref",
+          "ref": "#valueRange"
         },
         "required": {
           "type": "boolean"
@@ -114,7 +115,8 @@
           "ref": "#fieldDefNode"
         },
         "valueRange": {
-          "type": "unknown"
+          "type": "ref",
+          "ref": "#valueRange"
         },
         "required": {
           "type": "boolean"
@@ -127,7 +129,7 @@
         },
         "additionalFieldDef": {
           "type": "ref",
-          "ref": "#fieldDefNode"
+          "ref": "#fieldDefAdditional"
         }
       },
       "required": [
@@ -170,7 +172,8 @@
           "ref": "#fieldDefNode"
         },
         "valueRange": {
-          "type": "unknown"
+          "type": "ref",
+          "ref": "#valueRange"
         },
         "required": {
           "type": "boolean"
@@ -183,7 +186,7 @@
         },
         "additionalFieldDef": {
           "type": "ref",
-          "ref": "#fieldDefNode"
+          "ref": "#fieldDefAdditional"
         }
       },
       "required": [
@@ -192,6 +195,74 @@
         "fieldType",
         "required"
       ]
+    },
+    "fieldDefAdditional": {
+      "type": "object",
+      "description": "Additional child field template. Must not be extensible.",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 320
+        },
+        "fieldType": {
+          "type": "string",
+          "knownValues": [
+            "integer",
+            "string",
+            "boolean",
+            "enum",
+            "group",
+            "array"
+          ]
+        },
+        "children": {
+          "type": "array",
+          "items": {
+            "type": "ref",
+            "ref": "#fieldDefNode"
+          }
+        },
+        "itemDef": {
+          "type": "ref",
+          "ref": "#fieldDefNode"
+        },
+        "valueRange": {
+          "type": "ref",
+          "ref": "#valueRange"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "fieldId",
+        "label",
+        "fieldType",
+        "required"
+      ]
+    },
+    "valueRange": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "integer"
+        },
+        "max": {
+          "type": "integer"
+        },
+        "enumValues": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

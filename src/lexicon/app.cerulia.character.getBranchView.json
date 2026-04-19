@@ -56,6 +56,7 @@
         "sheetRef": { "type": "string", "format": "at-uri" },
         "displayName": { "type": "string", "maxLength": 640 },
         "rulesetNsid": { "type": "string", "format": "nsid" },
+        "structuredStats": { "type": "array", "items": { "type": "ref", "ref": "#statEntry" }, "description": "Schema-backed public stats only. Omitted when sheetSchemaRef is absent." },
         "portraitBlob": { "type": "blob" },
         "profileSummary": { "type": "string", "maxLength": 3000 }
       }
@@ -82,7 +83,8 @@
       "properties": {
         "advancementRef": { "type": "string", "format": "at-uri" },
         "advancementKind": { "type": "string", "knownValues": ["xp-spend", "milestone", "retrain", "respec", "correction"] },
-        "effectiveAt": { "type": "string", "format": "datetime" }
+        "effectiveAt": { "type": "string", "format": "datetime" },
+        "sessionSummary": { "type": "ref", "ref": "#advancementSessionSummary" }
       }
     },
     "conversionSummary": {
@@ -105,6 +107,25 @@
         "playedAt": { "type": "string", "format": "datetime" },
         "scenarioLabel": { "type": "string", "maxLength": 640 },
         "visibility": { "type": "string", "knownValues": ["draft", "public"] }
+      }
+    },
+    "advancementSessionSummary": {
+      "type": "object",
+      "required": ["sessionRef", "role", "playedAt"],
+      "properties": {
+        "sessionRef": { "type": "string", "format": "at-uri" },
+        "role": { "type": "string", "knownValues": ["pl", "gm"] },
+        "playedAt": { "type": "string", "format": "datetime" },
+        "scenarioLabel": { "type": "string", "maxLength": 640 }
+      }
+    },
+    "statEntry": {
+      "type": "object",
+      "required": ["fieldId", "value"],
+      "properties": {
+        "fieldId": { "type": "string" },
+        "label": { "type": "string", "maxLength": 320 },
+        "value": { "type": "unknown" }
       }
     }
   }

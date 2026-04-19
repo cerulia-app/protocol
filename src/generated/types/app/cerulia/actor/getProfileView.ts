@@ -24,9 +24,9 @@ export type InputSchema = undefined
 export interface OutputSchema {
   profile?: AppCeruliaCorePlayerProfile.Main
   blueskyFallbackProfile?: FallbackProfile
+  profileSummary?: ProfileSummary
   /** Link-only branch rows for public character detail navigation. Present in public/anonymous mode only. */
   publicBranches?: BranchLink[]
-  profileSummary?: ProfileSummary
 }
 
 export interface CallOptions {
@@ -42,27 +42,6 @@ export interface Response {
 
 export function toKnownErr(e: any) {
   return e
-}
-
-export interface BranchListItem {
-  $type?: 'app.cerulia.actor.getProfileView#branchListItem'
-  branchRef: string
-  branchLabel: string
-  baseSheetRef: string
-  branchKind: 'main' | 'campaign-fork' | 'local-override' | (string & {})
-  visibility: 'draft' | 'public' | (string & {})
-  revision: number
-  updatedAt?: string
-}
-
-const hashBranchListItem = 'branchListItem'
-
-export function isBranchListItem<V>(v: V) {
-  return is$typed(v, id, hashBranchListItem)
-}
-
-export function validateBranchListItem<V>(v: V) {
-  return validate<BranchListItem & V>(v, id, hashBranchListItem)
 }
 
 /** Composed public-safe profile summary. Fallback-hydrated from Bluesky profile when Cerulia override is absent. */

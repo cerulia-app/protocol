@@ -45,6 +45,12 @@ export const schemaDict = {
                 description:
                   'Bluesky fallback profile fields for owner-side comparison. Present in owner mode only.',
               },
+              profileSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.actor.getProfileView#profileSummary',
+                description:
+                  'Composed public-safe profile summary. Present in public/anonymous mode only.',
+              },
               publicBranches: {
                 type: 'array',
                 items: {
@@ -54,54 +60,7 @@ export const schemaDict = {
                 description:
                   'Link-only branch rows for public character detail navigation. Present in public/anonymous mode only.',
               },
-              profileSummary: {
-                type: 'ref',
-                ref: 'lex:app.cerulia.actor.getProfileView#profileSummary',
-                description:
-                  'Composed public-safe profile summary. Present in public/anonymous mode only.',
-              },
             },
-          },
-        },
-      },
-      branchListItem: {
-        type: 'object',
-        required: [
-          'branchRef',
-          'branchLabel',
-          'baseSheetRef',
-          'branchKind',
-          'visibility',
-          'revision',
-        ],
-        properties: {
-          branchRef: {
-            type: 'string',
-            format: 'at-uri',
-          },
-          branchLabel: {
-            type: 'string',
-            maxLength: 640,
-          },
-          baseSheetRef: {
-            type: 'string',
-            format: 'at-uri',
-          },
-          branchKind: {
-            type: 'string',
-            knownValues: ['main', 'campaign-fork', 'local-override'],
-          },
-          visibility: {
-            type: 'string',
-            knownValues: ['draft', 'public'],
-          },
-          revision: {
-            type: 'integer',
-            minimum: 1,
-          },
-          updatedAt: {
-            type: 'string',
-            format: 'datetime',
           },
         },
       },
@@ -920,6 +879,15 @@ export const schemaDict = {
             type: 'string',
             format: 'nsid',
           },
+          structuredStats: {
+            type: 'array',
+            items: {
+              type: 'ref',
+              ref: 'lex:app.cerulia.character.getBranchView#statEntry',
+            },
+            description:
+              'Schema-backed public stats only. Omitted when sheetSchemaRef is absent.',
+          },
           portraitBlob: {
             type: 'blob',
           },
@@ -996,6 +964,10 @@ export const schemaDict = {
             type: 'string',
             format: 'datetime',
           },
+          sessionSummary: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.character.getBranchView#advancementSessionSummary',
+          },
         },
       },
       conversionSummary: {
@@ -1050,6 +1022,44 @@ export const schemaDict = {
           visibility: {
             type: 'string',
             knownValues: ['draft', 'public'],
+          },
+        },
+      },
+      advancementSessionSummary: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+        },
+      },
+      statEntry: {
+        type: 'object',
+        required: ['fieldId', 'value'],
+        properties: {
+          fieldId: {
+            type: 'string',
+          },
+          label: {
+            type: 'string',
+            maxLength: 320,
+          },
+          value: {
+            type: 'unknown',
           },
         },
       },
@@ -1876,7 +1886,8 @@ export const schemaDict = {
             knownValues: ['integer', 'string', 'boolean', 'enum'],
           },
           valueRange: {
-            type: 'unknown',
+            type: 'ref',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#valueRange',
           },
           required: {
             type: 'boolean',
@@ -1920,7 +1931,8 @@ export const schemaDict = {
             ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
           valueRange: {
-            type: 'unknown',
+            type: 'ref',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#valueRange',
           },
           required: {
             type: 'boolean',
@@ -1933,7 +1945,7 @@ export const schemaDict = {
           },
           additionalFieldDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefAdditional',
           },
         },
         required: ['fieldId', 'label', 'fieldType', 'required'],
@@ -1971,7 +1983,8 @@ export const schemaDict = {
             ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
           },
           valueRange: {
-            type: 'unknown',
+            type: 'ref',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#valueRange',
           },
           required: {
             type: 'boolean',
@@ -1984,10 +1997,73 @@ export const schemaDict = {
           },
           additionalFieldDef: {
             type: 'ref',
-            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefAdditional',
           },
         },
         required: ['fieldId', 'label', 'fieldType', 'required'],
+      },
+      fieldDefAdditional: {
+        type: 'object',
+        description: 'Additional child field template. Must not be extensible.',
+        properties: {
+          fieldId: {
+            type: 'string',
+          },
+          label: {
+            type: 'string',
+            maxLength: 320,
+          },
+          fieldType: {
+            type: 'string',
+            knownValues: [
+              'integer',
+              'string',
+              'boolean',
+              'enum',
+              'group',
+              'array',
+            ],
+          },
+          children: {
+            type: 'array',
+            items: {
+              type: 'ref',
+              ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
+            },
+          },
+          itemDef: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefNode',
+          },
+          valueRange: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.core.characterSheetSchema#valueRange',
+          },
+          required: {
+            type: 'boolean',
+          },
+          description: {
+            type: 'string',
+          },
+        },
+        required: ['fieldId', 'label', 'fieldType', 'required'],
+      },
+      valueRange: {
+        type: 'object',
+        properties: {
+          min: {
+            type: 'integer',
+          },
+          max: {
+            type: 'integer',
+          },
+          enumValues: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
       },
     },
   },

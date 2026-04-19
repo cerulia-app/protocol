@@ -86,6 +86,8 @@ export interface SheetSummary {
   sheetRef: string
   displayName: string
   rulesetNsid: string
+  /** Schema-backed public stats only. Omitted when sheetSchemaRef is absent. */
+  structuredStats?: StatEntry[]
   portraitBlob?: BlobRef
   profileSummary?: string
 }
@@ -135,6 +137,7 @@ export interface AdvancementSummary {
     | 'correction'
     | (string & {})
   effectiveAt: string
+  sessionSummary?: AdvancementSessionSummary
 }
 
 const hashAdvancementSummary = 'advancementSummary'
@@ -183,4 +186,43 @@ export function isSessionListItem<V>(v: V) {
 
 export function validateSessionListItem<V>(v: V) {
   return validate<SessionListItem & V>(v, id, hashSessionListItem)
+}
+
+export interface AdvancementSessionSummary {
+  $type?: 'app.cerulia.character.getBranchView#advancementSessionSummary'
+  sessionRef: string
+  role: 'pl' | 'gm' | (string & {})
+  playedAt: string
+  scenarioLabel?: string
+}
+
+const hashAdvancementSessionSummary = 'advancementSessionSummary'
+
+export function isAdvancementSessionSummary<V>(v: V) {
+  return is$typed(v, id, hashAdvancementSessionSummary)
+}
+
+export function validateAdvancementSessionSummary<V>(v: V) {
+  return validate<AdvancementSessionSummary & V>(
+    v,
+    id,
+    hashAdvancementSessionSummary,
+  )
+}
+
+export interface StatEntry {
+  $type?: 'app.cerulia.character.getBranchView#statEntry'
+  fieldId: string
+  label?: string
+  value: { [_ in string]: unknown }
+}
+
+const hashStatEntry = 'statEntry'
+
+export function isStatEntry<V>(v: V) {
+  return is$typed(v, id, hashStatEntry)
+}
+
+export function validateStatEntry<V>(v: V) {
+  return validate<StatEntry & V>(v, id, hashStatEntry)
 }

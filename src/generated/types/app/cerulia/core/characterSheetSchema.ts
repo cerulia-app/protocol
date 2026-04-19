@@ -46,7 +46,7 @@ export interface FieldDefLeaf {
   fieldId: string
   label: string
   fieldType: 'integer' | 'string' | 'boolean' | 'enum' | (string & {})
-  valueRange?: { [_ in string]: unknown }
+  valueRange?: ValueRange
   required: boolean
   description?: string
 }
@@ -75,11 +75,11 @@ export interface FieldDefNode {
     | (string & {})
   children?: FieldDefNode[]
   itemDef?: FieldDefNode
-  valueRange?: { [_ in string]: unknown }
+  valueRange?: ValueRange
   required: boolean
   description?: string
   extensible?: boolean
-  additionalFieldDef?: FieldDefNode
+  additionalFieldDef?: FieldDefAdditional
 }
 
 const hashFieldDefNode = 'fieldDefNode'
@@ -106,11 +106,11 @@ export interface FieldDefRoot {
     | (string & {})
   children?: FieldDefNode[]
   itemDef?: FieldDefNode
-  valueRange?: { [_ in string]: unknown }
+  valueRange?: ValueRange
   required: boolean
   description?: string
   extensible?: boolean
-  additionalFieldDef?: FieldDefNode
+  additionalFieldDef?: FieldDefAdditional
 }
 
 const hashFieldDefRoot = 'fieldDefRoot'
@@ -121,4 +121,51 @@ export function isFieldDefRoot<V>(v: V) {
 
 export function validateFieldDefRoot<V>(v: V) {
   return validate<FieldDefRoot & V>(v, id, hashFieldDefRoot)
+}
+
+/** Additional child field template. Must not be extensible. */
+export interface FieldDefAdditional {
+  $type?: 'app.cerulia.core.characterSheetSchema#fieldDefAdditional'
+  fieldId: string
+  label: string
+  fieldType:
+    | 'integer'
+    | 'string'
+    | 'boolean'
+    | 'enum'
+    | 'group'
+    | 'array'
+    | (string & {})
+  children?: FieldDefNode[]
+  itemDef?: FieldDefNode
+  valueRange?: ValueRange
+  required: boolean
+  description?: string
+}
+
+const hashFieldDefAdditional = 'fieldDefAdditional'
+
+export function isFieldDefAdditional<V>(v: V) {
+  return is$typed(v, id, hashFieldDefAdditional)
+}
+
+export function validateFieldDefAdditional<V>(v: V) {
+  return validate<FieldDefAdditional & V>(v, id, hashFieldDefAdditional)
+}
+
+export interface ValueRange {
+  $type?: 'app.cerulia.core.characterSheetSchema#valueRange'
+  min?: number
+  max?: number
+  enumValues?: string[]
+}
+
+const hashValueRange = 'valueRange'
+
+export function isValueRange<V>(v: V) {
+  return is$typed(v, id, hashValueRange)
+}
+
+export function validateValueRange<V>(v: V) {
+  return validate<ValueRange & V>(v, id, hashValueRange)
 }

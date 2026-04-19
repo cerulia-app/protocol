@@ -22,44 +22,9 @@
           "properties": {
             "profile": { "type": "ref", "ref": "app.cerulia.core.playerProfile", "description": "Full player profile record. Present in owner mode only." },
             "blueskyFallbackProfile": { "type": "ref", "ref": "#fallbackProfile", "description": "Bluesky fallback profile fields for owner-side comparison. Present in owner mode only." },
-            "publicBranches": { "type": "array", "items": { "type": "ref", "ref": "#branchListItem" }, "description": "Branch list items. Present in owner mode only." },
             "profileSummary": { "type": "ref", "ref": "#profileSummary", "description": "Composed public-safe profile summary. Present in public/anonymous mode only." },
             "publicBranches": { "type": "array", "items": { "type": "ref", "ref": "#branchLink" }, "description": "Link-only branch rows for public character detail navigation. Present in public/anonymous mode only." }
           }
-        }
-      }
-    },
-    "branchListItem": {
-      "type": "object",
-      "required": ["branchRef", "branchLabel", "baseSheetRef", "branchKind", "visibility", "revision"],
-      "properties": {
-        "branchRef": {
-          "type": "string",
-          "format": "at-uri"
-        },
-        "branchLabel": {
-          "type": "string",
-          "maxLength": 640
-        },
-        "baseSheetRef": {
-          "type": "string",
-          "format": "at-uri"
-        },
-        "branchKind": {
-          "type": "string",
-          "knownValues": ["main", "campaign-fork", "local-override"]
-        },
-        "visibility": {
-          "type": "string",
-          "knownValues": ["draft", "public"]
-        },
-        "revision": {
-          "type": "integer",
-          "minimum": 1
-        },
-        "updatedAt": {
-          "type": "string",
-          "format": "datetime"
         }
       }
     },
