@@ -16,7 +16,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get player profile owner/public projection.',
+        description:
+          'Get player profile owner/public projection. Owner mode returns raw profile record. Public/anonymous mode returns composed profile summary and branch links only.',
         parameters: {
           type: 'params',
           required: ['did'],
@@ -31,11 +32,12 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['profile'],
             properties: {
               profile: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.playerProfile',
+                description:
+                  'Full player profile record. Present in owner mode only.',
               },
               publicBranches: {
                 type: 'array',
@@ -43,6 +45,22 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.actor.getProfileView#branchListItem',
                 },
+                description: 'Branch list items. Present in owner mode only.',
+              },
+              profileSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.actor.getProfileView#profileSummary',
+                description:
+                  'Composed public-safe profile summary. Present in public/anonymous mode only.',
+              },
+              publicBranchLinks: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.actor.getProfileView#branchLink',
+                },
+                description:
+                  'Link-only branch rows for public character detail navigation. Present in public/anonymous mode only.',
               },
             },
           },
@@ -86,6 +104,107 @@ export const schemaDict = {
           updatedAt: {
             type: 'string',
             format: 'datetime',
+          },
+        },
+      },
+      profileSummary: {
+        type: 'object',
+        description:
+          'Composed public-safe profile summary. Fallback-hydrated from Bluesky profile when Cerulia override is absent.',
+        required: ['did'],
+        properties: {
+          did: {
+            type: 'string',
+            format: 'did',
+          },
+          displayName: {
+            type: 'string',
+            maxLength: 640,
+          },
+          description: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          website: {
+            type: 'string',
+            format: 'uri',
+          },
+          pronouns: {
+            type: 'string',
+            maxLength: 100,
+          },
+          roleDistribution: {
+            type: 'integer',
+            minimum: 0,
+            maximum: 100,
+          },
+          playFormats: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          tools: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          ownedRulebooks: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          playableTimeSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          preferredScenarioStyles: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          playStyles: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          boundaries: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+          skills: {
+            type: 'array',
+            items: {
+              type: 'string',
+            },
+          },
+        },
+      },
+      branchLink: {
+        type: 'object',
+        description:
+          'Link-only branch row for public character detail navigation.',
+        required: ['branchRef', 'displayName', 'rulesetNsid'],
+        properties: {
+          branchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          displayName: {
+            type: 'string',
+            maxLength: 640,
+          },
+          branchLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
           },
         },
       },
@@ -268,7 +387,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get campaign owner/public projection.',
+        description:
+          'Get campaign owner/public projection. Owner mode returns raw record fields. Public/anonymous mode returns summary fields only.',
         parameters: {
           type: 'params',
           required: ['campaignRef'],
@@ -283,11 +403,12 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['campaign'],
             properties: {
               campaign: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.campaign',
+                description:
+                  'Full campaign record. Present in owner mode only.',
               },
               sessions: {
                 type: 'array',
@@ -295,6 +416,7 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.campaign.getView#sessionListItem',
                 },
+                description: 'Session list items. Present in owner mode only.',
               },
               ruleProfiles: {
                 type: 'array',
@@ -302,6 +424,29 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.core.ruleProfile',
                 },
+                description:
+                  'Full rule profile records. Present in owner mode only.',
+              },
+              campaignSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.campaign.getView#campaignSummary',
+                description:
+                  'Public-safe campaign summary. Present in public/anonymous mode only.',
+              },
+              sessionSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.campaign.getView#sessionSummary',
+                },
+                description:
+                  'Public-safe session summaries. Present in public/anonymous mode only.',
+              },
+              ruleOverlaySummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.campaign.getView#ruleOverlaySummary',
+                description:
+                  'Public-safe rule overlay summary. Present in public/anonymous mode only.',
               },
             },
           },
@@ -334,6 +479,97 @@ export const schemaDict = {
           visibility: {
             type: 'string',
             knownValues: ['draft', 'public'],
+          },
+        },
+      },
+      campaignSummary: {
+        type: 'object',
+        description: 'Public-safe campaign display fields.',
+        required: ['campaignRef', 'title', 'rulesetNsid', 'visibility'],
+        properties: {
+          campaignRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      sessionSummary: {
+        type: 'object',
+        description:
+          'Public-safe session summary. Excludes note and characterBranchRef.',
+        required: ['sessionRef', 'role', 'playedAt'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          outcomeSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+        },
+      },
+      ruleOverlaySummary: {
+        type: 'object',
+        description:
+          'Public-safe rule overlay summary. Excludes raw rule-profile payload.',
+        properties: {
+          ruleProfiles: {
+            type: 'array',
+            items: {
+              type: 'ref',
+              ref: 'lex:app.cerulia.campaign.getView#ruleProfileLink',
+            },
+          },
+        },
+      },
+      ruleProfileLink: {
+        type: 'object',
+        required: ['ruleProfileRef', 'profileTitle'],
+        properties: {
+          ruleProfileRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          profileTitle: {
+            type: 'string',
+            maxLength: 640,
           },
         },
       },
@@ -499,7 +735,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get character branch owner/public projection.',
+        description:
+          'Get character branch owner/public projection. Owner mode returns raw record fields. Public/anonymous mode returns summary fields only.',
         parameters: {
           type: 'params',
           required: ['characterBranchRef'],
@@ -514,15 +751,16 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['branch', 'sheet'],
             properties: {
               branch: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.characterBranch',
+                description: 'Full branch record. Present in owner mode only.',
               },
               sheet: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.characterSheet',
+                description: 'Full sheet record. Present in owner mode only.',
               },
               advancements: {
                 type: 'array',
@@ -530,6 +768,8 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.core.characterAdvancement',
                 },
+                description:
+                  'Full advancement records. Present in owner mode only.',
               },
               conversions: {
                 type: 'array',
@@ -537,6 +777,8 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.core.characterConversion',
                 },
+                description:
+                  'Full conversion records. Present in owner mode only.',
               },
               recentSessions: {
                 type: 'array',
@@ -544,8 +786,216 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.character.getBranchView#sessionListItem',
                 },
+                description: 'Session list items. Present in owner mode only.',
+              },
+              branchSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.character.getBranchView#branchSummary',
+                description:
+                  'Public-safe branch summary. Present in public/anonymous mode only.',
+              },
+              sheetSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.character.getBranchView#sheetSummary',
+                description:
+                  'Public-safe sheet summary. Present in public/anonymous mode only.',
+              },
+              recentSessionSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getBranchView#sessionSummary',
+                },
+                description:
+                  'Public-safe session summaries. Present in public/anonymous mode only.',
+              },
+              advancementSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getBranchView#advancementSummary',
+                },
+                description:
+                  'Public-safe advancement summaries. Present in public/anonymous mode only.',
+              },
+              conversionSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getBranchView#conversionSummary',
+                },
+                description:
+                  'Public-safe conversion summaries. Present in public/anonymous mode only.',
               },
             },
+          },
+        },
+      },
+      branchSummary: {
+        type: 'object',
+        description:
+          'Public-safe branch display fields. Excludes overridePayload and owner-only linkage.',
+        required: [
+          'branchRef',
+          'branchLabel',
+          'branchKind',
+          'baseSheetRef',
+          'visibility',
+          'revision',
+        ],
+        properties: {
+          branchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          branchLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          branchKind: {
+            type: 'string',
+            knownValues: ['main', 'campaign-fork', 'local-override'],
+          },
+          baseSheetRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          revision: {
+            type: 'integer',
+            minimum: 1,
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      sheetSummary: {
+        type: 'object',
+        description:
+          'Public-safe sheet display fields. Excludes stats payload and internal fields.',
+        required: ['sheetRef', 'displayName', 'rulesetNsid'],
+        properties: {
+          sheetRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          displayName: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          portraitBlob: {
+            type: 'blob',
+          },
+          profileSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+        },
+      },
+      sessionSummary: {
+        type: 'object',
+        description:
+          'Public-safe session summary. Excludes note and characterBranchRef.',
+        required: ['sessionRef', 'role', 'playedAt'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          outcomeSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          externalArchiveUris: {
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'uri',
+            },
+          },
+        },
+      },
+      advancementSummary: {
+        type: 'object',
+        description:
+          'Public-safe advancement summary. Excludes deltaPayload and previousValues.',
+        required: ['advancementRef', 'advancementKind', 'effectiveAt'],
+        properties: {
+          advancementRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          advancementKind: {
+            type: 'string',
+            knownValues: [
+              'xp-spend',
+              'milestone',
+              'retrain',
+              'respec',
+              'correction',
+            ],
+          },
+          effectiveAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      conversionSummary: {
+        type: 'object',
+        description:
+          'Public-safe conversion provenance. Excludes version pins.',
+        required: [
+          'conversionRef',
+          'sourceRulesetNsid',
+          'targetRulesetNsid',
+          'convertedAt',
+        ],
+        properties: {
+          conversionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          sourceRulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          targetRulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          convertedAt: {
+            type: 'string',
+            format: 'datetime',
           },
         },
       },
@@ -1373,6 +1823,7 @@ export const schemaDict = {
             'title',
             'ownerDid',
             'createdAt',
+            'fieldDefs',
           ],
         },
       },
@@ -1964,7 +2415,8 @@ export const schemaDict = {
     defs: {
       main: {
         type: 'query',
-        description: 'Get house owner/public projection.',
+        description:
+          'Get house owner/public projection. Owner mode returns raw record fields. Public/anonymous mode returns summary fields only.',
         parameters: {
           type: 'params',
           required: ['houseRef'],
@@ -1979,11 +2431,11 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
-            required: ['house'],
             properties: {
               house: {
                 type: 'ref',
                 ref: 'lex:app.cerulia.core.house',
+                description: 'Full house record. Present in owner mode only.',
               },
               campaigns: {
                 type: 'array',
@@ -1991,6 +2443,7 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.house.getView#campaignListItem',
                 },
+                description: 'Campaign list items. Present in owner mode only.',
               },
               sessions: {
                 type: 'array',
@@ -1998,6 +2451,31 @@ export const schemaDict = {
                   type: 'ref',
                   ref: 'lex:app.cerulia.house.getView#sessionListItem',
                 },
+                description: 'Session list items. Present in owner mode only.',
+              },
+              houseSummary: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.house.getView#houseSummary',
+                description:
+                  'Public-safe house summary. Present in public/anonymous mode only.',
+              },
+              campaignSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.house.getView#campaignSummary',
+                },
+                description:
+                  'Public-safe campaign summaries. Present in public/anonymous mode only.',
+              },
+              sessionSummaries: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.house.getView#sessionSummary',
+                },
+                description:
+                  'Public-safe session summaries. Present in public/anonymous mode only.',
               },
             },
           },
@@ -2052,6 +2530,96 @@ export const schemaDict = {
           visibility: {
             type: 'string',
             knownValues: ['draft', 'public'],
+          },
+        },
+      },
+      houseSummary: {
+        type: 'object',
+        description: 'Public-safe house display fields.',
+        required: ['houseRef', 'title', 'visibility'],
+        properties: {
+          houseRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          canonSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          externalCommunityUri: {
+            type: 'string',
+            format: 'uri',
+          },
+        },
+      },
+      campaignSummary: {
+        type: 'object',
+        description: 'Public-safe campaign display fields.',
+        required: ['campaignRef', 'title', 'rulesetNsid', 'visibility'],
+        properties: {
+          campaignRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      sessionSummary: {
+        type: 'object',
+        description:
+          'Public-safe session summary. Excludes note and characterBranchRef.',
+        required: ['sessionRef', 'role', 'playedAt'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          hoSummary: {
+            type: 'string',
+            maxLength: 3000,
+          },
+          outcomeSummary: {
+            type: 'string',
+            maxLength: 3000,
           },
         },
       },
@@ -2198,7 +2766,8 @@ export const schemaDict = {
               fieldDefs: {
                 type: 'array',
                 items: {
-                  type: 'unknown',
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.core.characterSheetSchema#fieldDefRoot',
                 },
               },
             },

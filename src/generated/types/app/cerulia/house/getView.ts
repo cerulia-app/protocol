@@ -22,9 +22,16 @@ export type QueryParams = {
 export type InputSchema = undefined
 
 export interface OutputSchema {
-  house: AppCeruliaCoreHouse.Main
+  house?: AppCeruliaCoreHouse.Main
+  /** Campaign list items. Present in owner mode only. */
   campaigns?: CampaignListItem[]
+  /** Session list items. Present in owner mode only. */
   sessions?: SessionListItem[]
+  houseSummary?: HouseSummary
+  /** Public-safe campaign summaries. Present in public/anonymous mode only. */
+  campaignSummaries?: CampaignSummary[]
+  /** Public-safe session summaries. Present in public/anonymous mode only. */
+  sessionSummaries?: SessionSummary[]
 }
 
 export interface CallOptions {
@@ -78,4 +85,66 @@ export function isSessionListItem<V>(v: V) {
 
 export function validateSessionListItem<V>(v: V) {
   return validate<SessionListItem & V>(v, id, hashSessionListItem)
+}
+
+/** Public-safe house display fields. */
+export interface HouseSummary {
+  $type?: 'app.cerulia.house.getView#houseSummary'
+  houseRef: string
+  title: string
+  visibility: 'draft' | 'public' | (string & {})
+  canonSummary?: string
+  externalCommunityUri?: string
+}
+
+const hashHouseSummary = 'houseSummary'
+
+export function isHouseSummary<V>(v: V) {
+  return is$typed(v, id, hashHouseSummary)
+}
+
+export function validateHouseSummary<V>(v: V) {
+  return validate<HouseSummary & V>(v, id, hashHouseSummary)
+}
+
+/** Public-safe campaign display fields. */
+export interface CampaignSummary {
+  $type?: 'app.cerulia.house.getView#campaignSummary'
+  campaignRef: string
+  title: string
+  rulesetNsid: string
+  visibility: 'draft' | 'public' | (string & {})
+  updatedAt?: string
+}
+
+const hashCampaignSummary = 'campaignSummary'
+
+export function isCampaignSummary<V>(v: V) {
+  return is$typed(v, id, hashCampaignSummary)
+}
+
+export function validateCampaignSummary<V>(v: V) {
+  return validate<CampaignSummary & V>(v, id, hashCampaignSummary)
+}
+
+/** Public-safe session summary. Excludes note and characterBranchRef. */
+export interface SessionSummary {
+  $type?: 'app.cerulia.house.getView#sessionSummary'
+  sessionRef: string
+  role: 'pl' | 'gm' | (string & {})
+  playedAt: string
+  scenarioLabel?: string
+  hoLabel?: string
+  hoSummary?: string
+  outcomeSummary?: string
+}
+
+const hashSessionSummary = 'sessionSummary'
+
+export function isSessionSummary<V>(v: V) {
+  return is$typed(v, id, hashSessionSummary)
+}
+
+export function validateSessionSummary<V>(v: V) {
+  return validate<SessionSummary & V>(v, id, hashSessionSummary)
 }

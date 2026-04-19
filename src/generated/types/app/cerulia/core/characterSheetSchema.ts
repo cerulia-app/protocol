@@ -21,7 +21,7 @@ export interface Main {
   title: string
   ownerDid: string
   createdAt: string
-  fieldDefs?: FieldDefRoot[]
+  fieldDefs: FieldDefRoot[]
   [k: string]: unknown
 }
 

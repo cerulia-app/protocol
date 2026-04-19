@@ -40,7 +40,8 @@
           "schemaVersion",
           "title",
           "ownerDid",
-          "createdAt"
+          "createdAt",
+          "fieldDefs"
         ]
       }
     },

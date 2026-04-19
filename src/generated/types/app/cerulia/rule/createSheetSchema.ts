@@ -10,6 +10,7 @@ import {
   is$typed as _is$typed,
   type OmitKey,
 } from '../../../../util'
+import type * as AppCeruliaCoreCharacterSheetSchema from '../core/characterSheetSchema.js'
 import type * as AppCeruliaDefs from '../defs.js'
 
 const is$typed = _is$typed,
@@ -22,7 +23,7 @@ export interface InputSchema {
   baseRulesetNsid: string
   schemaVersion: string
   title: string
-  fieldDefs: { [_ in string]: unknown }[]
+  fieldDefs: AppCeruliaCoreCharacterSheetSchema.FieldDefRoot[]
 }
 
 export type OutputSchema = AppCeruliaDefs.MutationAck

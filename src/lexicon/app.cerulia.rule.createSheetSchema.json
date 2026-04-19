@@ -25,7 +25,8 @@
             "fieldDefs": {
               "type": "array",
               "items": {
-                "type": "unknown"
+                "type": "ref",
+                "ref": "app.cerulia.core.characterSheetSchema#fieldDefRoot"
               }
             }
           }

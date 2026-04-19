@@ -23,9 +23,15 @@ export type QueryParams = {
 export type InputSchema = undefined
 
 export interface OutputSchema {
-  campaign: AppCeruliaCoreCampaign.Main
+  campaign?: AppCeruliaCoreCampaign.Main
+  /** Session list items. Present in owner mode only. */
   sessions?: SessionListItem[]
+  /** Full rule profile records. Present in owner mode only. */
   ruleProfiles?: AppCeruliaCoreRuleProfile.Main[]
+  campaignSummary?: CampaignSummary
+  /** Public-safe session summaries. Present in public/anonymous mode only. */
+  sessionSummaries?: SessionSummary[]
+  ruleOverlaySummary?: RuleOverlaySummary
 }
 
 export interface CallOptions {
@@ -61,4 +67,78 @@ export function isSessionListItem<V>(v: V) {
 
 export function validateSessionListItem<V>(v: V) {
   return validate<SessionListItem & V>(v, id, hashSessionListItem)
+}
+
+/** Public-safe campaign display fields. */
+export interface CampaignSummary {
+  $type?: 'app.cerulia.campaign.getView#campaignSummary'
+  campaignRef: string
+  title: string
+  rulesetNsid: string
+  visibility: 'draft' | 'public' | (string & {})
+  updatedAt?: string
+}
+
+const hashCampaignSummary = 'campaignSummary'
+
+export function isCampaignSummary<V>(v: V) {
+  return is$typed(v, id, hashCampaignSummary)
+}
+
+export function validateCampaignSummary<V>(v: V) {
+  return validate<CampaignSummary & V>(v, id, hashCampaignSummary)
+}
+
+/** Public-safe session summary. Excludes note and characterBranchRef. */
+export interface SessionSummary {
+  $type?: 'app.cerulia.campaign.getView#sessionSummary'
+  sessionRef: string
+  role: 'pl' | 'gm' | (string & {})
+  playedAt: string
+  scenarioLabel?: string
+  hoLabel?: string
+  hoSummary?: string
+  outcomeSummary?: string
+}
+
+const hashSessionSummary = 'sessionSummary'
+
+export function isSessionSummary<V>(v: V) {
+  return is$typed(v, id, hashSessionSummary)
+}
+
+export function validateSessionSummary<V>(v: V) {
+  return validate<SessionSummary & V>(v, id, hashSessionSummary)
+}
+
+/** Public-safe rule overlay summary. Excludes raw rule-profile payload. */
+export interface RuleOverlaySummary {
+  $type?: 'app.cerulia.campaign.getView#ruleOverlaySummary'
+  ruleProfiles?: RuleProfileLink[]
+}
+
+const hashRuleOverlaySummary = 'ruleOverlaySummary'
+
+export function isRuleOverlaySummary<V>(v: V) {
+  return is$typed(v, id, hashRuleOverlaySummary)
+}
+
+export function validateRuleOverlaySummary<V>(v: V) {
+  return validate<RuleOverlaySummary & V>(v, id, hashRuleOverlaySummary)
+}
+
+export interface RuleProfileLink {
+  $type?: 'app.cerulia.campaign.getView#ruleProfileLink'
+  ruleProfileRef: string
+  profileTitle: string
+}
+
+const hashRuleProfileLink = 'ruleProfileLink'
+
+export function isRuleProfileLink<V>(v: V) {
+  return is$typed(v, id, hashRuleProfileLink)
+}
+
+export function validateRuleProfileLink<V>(v: V) {
+  return validate<RuleProfileLink & V>(v, id, hashRuleProfileLink)
 }
