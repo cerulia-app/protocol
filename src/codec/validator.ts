@@ -1,10 +1,143 @@
-import type { ValidationResult } from '@atproto/lexicon'
+import {
+  ValidationError,
+  type ValidationResult,
+} from '@atproto/lexicon'
 import { validate } from '../generated/lexicons.js'
+
+const CHARACTER_SHEET_SCHEMA_ID = 'app.cerulia.core.characterSheetSchema'
+
+type FieldDefLike = {
+  fieldType?: string
+  children?: unknown
+  itemDef?: unknown
+  extensible?: unknown
+  additionalFieldDef?: unknown
+}
+
+function isObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value)
+}
+
+function validateFieldDefNode(
+  node: unknown,
+  depth: number,
+  path: string,
+): string | null {
+  if (!isObject(node)) {
+    return `${path} must be an object`
+  }
+
+  if (depth > 3) {
+    return `${path} exceeds max depth 3`
+  }
+
+  const fieldDef = node as FieldDefLike
+  const fieldType = fieldDef.fieldType
+
+  if (fieldDef.extensible === true && fieldType !== 'group') {
+    return `${path}.extensible is only allowed on group fields`
+  }
+
+  if (isObject(fieldDef.additionalFieldDef)) {
+    if ((fieldDef.additionalFieldDef as FieldDefLike).extensible === true) {
+      return `${path}.additionalFieldDef must not be extensible`
+    }
+  }
+
+  if (fieldType === 'array' && isObject(fieldDef.itemDef)) {
+    const itemType = (fieldDef.itemDef as FieldDefLike).fieldType
+    if (itemType === 'array') {
+      return `${path}.itemDef must not be array (array-of-array is forbidden)`
+    }
+  }
+
+  if (Array.isArray(fieldDef.children)) {
+    for (let i = 0; i < fieldDef.children.length; i += 1) {
+      const err = validateFieldDefNode(
+        fieldDef.children[i],
+        depth + 1,
+        `${path}.children[${i}]`,
+      )
+      if (err) {
+        return err
+      }
+    }
+  }
+
+  if (isObject(fieldDef.itemDef)) {
+    const err = validateFieldDefNode(
+      fieldDef.itemDef,
+      depth + 1,
+      `${path}.itemDef`,
+    )
+    if (err) {
+      return err
+    }
+  }
+
+  if (isObject(fieldDef.additionalFieldDef)) {
+    const err = validateFieldDefNode(
+      fieldDef.additionalFieldDef,
+      depth + 1,
+      `${path}.additionalFieldDef`,
+    )
+    if (err) {
+      return err
+    }
+  }
+
+  return null
+}
+
+export function validateCharacterSheetSchemaFieldDefs(
+  value: unknown,
+): string | null {
+  if (!isObject(value)) {
+    return 'characterSheetSchema record must be an object'
+  }
+
+  const fieldDefs = value.fieldDefs
+  if (!Array.isArray(fieldDefs)) {
+    return 'fieldDefs must be an array'
+  }
+
+  for (let i = 0; i < fieldDefs.length; i += 1) {
+    const err = validateFieldDefNode(fieldDefs[i], 1, `fieldDefs[${i}]`)
+    if (err) {
+      return err
+    }
+  }
+
+  return null
+}
+
+function applyExtraValidation(
+  value: unknown,
+  lexiconId: string,
+  defId: string,
+): ValidationResult | null {
+  if (lexiconId === CHARACTER_SHEET_SCHEMA_ID && defId === 'main') {
+    const err = validateCharacterSheetSchemaFieldDefs(value)
+    if (err) {
+      return {
+        success: false,
+        error: new ValidationError(err),
+      }
+    }
+  }
+
+  return null
+}
 
 export function validateTyped<T extends { $type: string }>(
   value: T,
 ): ValidationResult {
-  return validate(value, value.$type, 'main', true)
+  const result = validate(value, value.$type, 'main', true)
+  if (!result.success) {
+    return result
+  }
+
+  return applyExtraValidation(value, value.$type, 'main') ?? result
 }
 
 export function validateById(
@@ -13,9 +146,13 @@ export function validateById(
   defId = 'main',
   enforceLexiconType = false,
 ): ValidationResult {
-  if (enforceLexiconType) {
-    return validate(value, lexiconId, defId, true)
+  const result = enforceLexiconType
+    ? validate(value, lexiconId, defId, true)
+    : validate(value, lexiconId, defId)
+
+  if (!result.success) {
+    return result
   }
 
-  return validate(value, lexiconId, defId)
+  return applyExtraValidation(value, lexiconId, defId) ?? result
 }

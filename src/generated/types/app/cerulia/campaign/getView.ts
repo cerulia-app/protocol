@@ -27,7 +27,7 @@ export interface OutputSchema {
   /** Session list items. Present in owner mode only. */
   sessions?: SessionListItem[]
   /** Full rule profile records. Present in owner mode only. */
-  ruleProfiles?: AppCeruliaCoreRuleProfile.Main[]
+  ruleOverlay?: AppCeruliaCoreRuleProfile.Main[]
   campaignSummary?: CampaignSummary
   /** Public-safe session summaries. Present in public/anonymous mode only. */
   sessionSummaries?: SessionSummary[]

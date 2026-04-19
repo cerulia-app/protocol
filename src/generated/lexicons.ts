@@ -411,7 +411,7 @@ export const schemaDict = {
                 },
                 description: 'Session list items. Present in owner mode only.',
               },
-              ruleProfiles: {
+              ruleOverlay: {
                 type: 'array',
                 items: {
                   type: 'ref',
@@ -1606,14 +1606,16 @@ export const schemaDict = {
               ],
             },
             deltaPayload: {
-              type: 'unknown',
+              type: 'ref',
+              ref: 'lex:app.cerulia.core.characterAdvancement#deltaPayload',
             },
             sessionRef: {
               type: 'string',
               format: 'at-uri',
             },
             previousValues: {
-              type: 'unknown',
+              type: 'ref',
+              ref: 'lex:app.cerulia.core.characterAdvancement#previousValues',
             },
             effectiveAt: {
               type: 'string',
@@ -1636,6 +1638,18 @@ export const schemaDict = {
             'createdAt',
           ],
         },
+      },
+      deltaPayload: {
+        type: 'object',
+        description:
+          'Inline advancement delta payload. Must be a public-safe JSON object.',
+        properties: {},
+      },
+      previousValues: {
+        type: 'object',
+        description:
+          'Previous values snapshot. Must be a public-safe JSON object.',
+        properties: {},
       },
     },
   },
@@ -1666,7 +1680,8 @@ export const schemaDict = {
               maxLength: 640,
             },
             overridePayload: {
-              type: 'unknown',
+              type: 'ref',
+              ref: 'lex:app.cerulia.core.characterBranch#overridePayload',
             },
             visibility: {
               type: 'string',
@@ -1700,6 +1715,12 @@ export const schemaDict = {
             'updatedAt',
           ],
         },
+      },
+      overridePayload: {
+        type: 'object',
+        description:
+          'Inline override patch payload. Must be a public-safe JSON object.',
+        properties: {},
       },
     },
   },

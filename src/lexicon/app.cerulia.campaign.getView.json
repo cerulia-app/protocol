@@ -22,7 +22,7 @@
           "properties": {
             "campaign": { "type": "ref", "ref": "app.cerulia.core.campaign", "description": "Full campaign record. Present in owner mode only." },
             "sessions": { "type": "array", "items": { "type": "ref", "ref": "#sessionListItem" }, "description": "Session list items. Present in owner mode only." },
-            "ruleProfiles": { "type": "array", "items": { "type": "ref", "ref": "app.cerulia.core.ruleProfile" }, "description": "Full rule profile records. Present in owner mode only." },
+            "ruleOverlay": { "type": "array", "items": { "type": "ref", "ref": "app.cerulia.core.ruleProfile" }, "description": "Full rule profile records. Present in owner mode only." },
             "campaignSummary": { "type": "ref", "ref": "#campaignSummary", "description": "Public-safe campaign summary. Present in public/anonymous mode only." },
             "sessionSummaries": { "type": "array", "items": { "type": "ref", "ref": "#sessionSummary" }, "description": "Public-safe session summaries. Present in public/anonymous mode only." },
             "ruleOverlaySummary": { "type": "ref", "ref": "#ruleOverlaySummary", "description": "Public-safe rule overlay summary. Present in public/anonymous mode only." }

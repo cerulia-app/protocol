@@ -24,9 +24,9 @@ export interface Main {
     | 'respec'
     | 'correction'
     | (string & {})
-  deltaPayload: { [_ in string]: unknown }
+  deltaPayload: DeltaPayload
   sessionRef?: string
-  previousValues?: { [_ in string]: unknown }
+  previousValues?: PreviousValues
   effectiveAt: string
   createdAt: string
   note?: string
@@ -47,4 +47,34 @@ export {
   type Main as Record,
   isMain as isRecord,
   validateMain as validateRecord,
+}
+
+/** Inline advancement delta payload. Must be a public-safe JSON object. */
+export interface DeltaPayload {
+  $type?: 'app.cerulia.core.characterAdvancement#deltaPayload'
+}
+
+const hashDeltaPayload = 'deltaPayload'
+
+export function isDeltaPayload<V>(v: V) {
+  return is$typed(v, id, hashDeltaPayload)
+}
+
+export function validateDeltaPayload<V>(v: V) {
+  return validate<DeltaPayload & V>(v, id, hashDeltaPayload)
+}
+
+/** Previous values snapshot. Must be a public-safe JSON object. */
+export interface PreviousValues {
+  $type?: 'app.cerulia.core.characterAdvancement#previousValues'
+}
+
+const hashPreviousValues = 'previousValues'
+
+export function isPreviousValues<V>(v: V) {
+  return is$typed(v, id, hashPreviousValues)
+}
+
+export function validatePreviousValues<V>(v: V) {
+  return validate<PreviousValues & V>(v, id, hashPreviousValues)
 }

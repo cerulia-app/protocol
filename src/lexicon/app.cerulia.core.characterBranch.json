@@ -29,7 +29,8 @@
             "maxLength": 640
           },
           "overridePayload": {
-            "type": "unknown"
+            "type": "ref",
+            "ref": "#overridePayload"
           },
           "visibility": {
             "type": "string",
@@ -66,6 +67,11 @@
           "updatedAt"
         ]
       }
+    },
+    "overridePayload": {
+      "type": "object",
+      "description": "Inline override patch payload. Must be a public-safe JSON object.",
+      "properties": {}
     }
   }
 }

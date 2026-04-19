@@ -20,7 +20,7 @@ export interface Main {
   baseSheetRef: string
   branchKind: 'main' | 'campaign-fork' | 'local-override' | (string & {})
   branchLabel: string
-  overridePayload?: { [_ in string]: unknown }
+  overridePayload?: OverridePayload
   visibility: 'draft' | 'public' | (string & {})
   revision: number
   createdAt: string
@@ -43,4 +43,19 @@ export {
   type Main as Record,
   isMain as isRecord,
   validateMain as validateRecord,
+}
+
+/** Inline override patch payload. Must be a public-safe JSON object. */
+export interface OverridePayload {
+  $type?: 'app.cerulia.core.characterBranch#overridePayload'
+}
+
+const hashOverridePayload = 'overridePayload'
+
+export function isOverridePayload<V>(v: V) {
+  return is$typed(v, id, hashOverridePayload)
+}
+
+export function validateOverridePayload<V>(v: V) {
+  return validate<OverridePayload & V>(v, id, hashOverridePayload)
 }

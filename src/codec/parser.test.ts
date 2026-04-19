@@ -53,4 +53,38 @@ describe('codec parser/validator', () => {
 
     expect(result.success).toBe(false)
   })
+
+  test('validateById rejects character-sheet-schema array-of-array fieldDefs', () => {
+    const invalidSchema = {
+      $type: 'app.cerulia.core.characterSheetSchema',
+      baseRulesetNsid: 'app.cerulia.ruleset.coc7',
+      schemaVersion: '1.0.0',
+      title: 'Invalid nested array schema',
+      ownerDid: 'did:plc:exampleownerdid1234567890',
+      createdAt: '2026-04-18T00:00:00.000Z',
+      fieldDefs: [
+        {
+          fieldId: 'skills',
+          label: 'Skills',
+          fieldType: 'array',
+          required: false,
+          itemDef: {
+            fieldId: 'nested',
+            label: 'Nested',
+            fieldType: 'array',
+            required: false,
+          },
+        },
+      ],
+    }
+
+    const result = validateById(
+      invalidSchema,
+      'app.cerulia.core.characterSheetSchema',
+      'main',
+      true,
+    )
+
+    expect(result.success).toBe(false)
+  })
 })

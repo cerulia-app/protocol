@@ -23,14 +23,16 @@
             ]
           },
           "deltaPayload": {
-            "type": "unknown"
+            "type": "ref",
+            "ref": "#deltaPayload"
           },
           "sessionRef": {
             "type": "string",
             "format": "at-uri"
           },
           "previousValues": {
-            "type": "unknown"
+            "type": "ref",
+            "ref": "#previousValues"
           },
           "effectiveAt": {
             "type": "string",
@@ -53,6 +55,16 @@
           "createdAt"
         ]
       }
+    },
+    "deltaPayload": {
+      "type": "object",
+      "description": "Inline advancement delta payload. Must be a public-safe JSON object.",
+      "properties": {}
+    },
+    "previousValues": {
+      "type": "object",
+      "description": "Previous values snapshot. Must be a public-safe JSON object.",
+      "properties": {}
     }
   }
 }
