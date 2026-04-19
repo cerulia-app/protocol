@@ -1,0 +1,99 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.house.getView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get house owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "required": ["houseRef"],
+        "properties": {
+          "houseRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["house"],
+          "properties": {
+            "house": {
+              "type": "ref",
+              "ref": "app.cerulia.core.house"
+            },
+            "campaigns": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "#campaignListItem"
+              }
+            },
+            "sessions": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "#sessionListItem"
+              }
+            }
+          }
+        }
+      }
+    },
+    "campaignListItem": {
+      "type": "object",
+      "required": ["campaignRef", "title", "rulesetNsid", "visibility"],
+      "properties": {
+        "campaignRef": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 640
+        },
+        "rulesetNsid": {
+          "type": "string",
+          "format": "nsid"
+        },
+        "visibility": {
+          "type": "string",
+          "knownValues": ["draft", "public"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "datetime"
+        }
+      }
+    },
+    "sessionListItem": {
+      "type": "object",
+      "required": ["sessionRef", "role", "playedAt", "visibility"],
+      "properties": {
+        "sessionRef": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "role": {
+          "type": "string",
+          "knownValues": ["pl", "gm"]
+        },
+        "playedAt": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "scenarioLabel": {
+          "type": "string",
+          "maxLength": 640
+        },
+        "visibility": {
+          "type": "string",
+          "knownValues": ["draft", "public"]
+        }
+      }
+    }
+  }
+}

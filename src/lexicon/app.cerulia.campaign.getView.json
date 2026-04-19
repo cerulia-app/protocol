@@ -1,0 +1,77 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.campaign.getView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get campaign owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "required": ["campaignRef"],
+        "properties": {
+          "campaignRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["campaign"],
+          "properties": {
+            "campaign": {
+              "type": "ref",
+              "ref": "app.cerulia.core.campaign"
+            },
+            "sessions": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "#sessionListItem"
+              }
+            },
+            "ruleProfiles": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "app.cerulia.core.ruleProfile"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sessionListItem": {
+      "type": "object",
+      "required": ["sessionRef", "role", "playedAt", "visibility"],
+      "properties": {
+        "sessionRef": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "role": {
+          "type": "string",
+          "knownValues": ["pl", "gm"]
+        },
+        "playedAt": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "scenarioLabel": {
+          "type": "string",
+          "maxLength": 640
+        },
+        "characterBranchRef": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "visibility": {
+          "type": "string",
+          "knownValues": ["draft", "public"]
+        }
+      }
+    }
+  }
+}

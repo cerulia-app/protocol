@@ -10,6 +10,187 @@ import {
 import { type $Typed, is$typed, maybe$typed } from './util.js'
 
 export const schemaDict = {
+  AppCeruliaActorGetProfileView: {
+    lexicon: 1,
+    id: 'app.cerulia.actor.getProfileView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get player profile owner/public projection.',
+        parameters: {
+          type: 'params',
+          required: ['did'],
+          properties: {
+            did: {
+              type: 'string',
+              format: 'did',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['profile'],
+            properties: {
+              profile: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.playerProfile',
+              },
+              publicBranches: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.actor.getProfileView#branchListItem',
+                },
+              },
+            },
+          },
+        },
+      },
+      branchListItem: {
+        type: 'object',
+        required: [
+          'branchRef',
+          'branchLabel',
+          'baseSheetRef',
+          'branchKind',
+          'visibility',
+          'revision',
+        ],
+        properties: {
+          branchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          branchLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          baseSheetRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          branchKind: {
+            type: 'string',
+            knownValues: ['main', 'campaign-fork', 'local-override'],
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          revision: {
+            type: 'integer',
+            minimum: 1,
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaActorUpdateProfile: {
+    lexicon: 1,
+    id: 'app.cerulia.actor.updateProfile',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update player profile.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            properties: {
+              blueskyProfileRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              displayNameOverride: {
+                type: 'string',
+                maxLength: 640,
+              },
+              descriptionOverride: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              avatarOverrideBlob: {
+                type: 'blob',
+              },
+              bannerOverrideBlob: {
+                type: 'blob',
+              },
+              websiteOverride: {
+                type: 'string',
+                format: 'uri',
+              },
+              pronounsOverride: {
+                type: 'string',
+                maxLength: 100,
+              },
+              roleDistribution: {
+                type: 'integer',
+                minimum: 0,
+                maximum: 100,
+              },
+              playFormats: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              tools: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              ownedRulebooks: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              playableTimeSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              preferredScenarioStyles: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              playStyles: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              boundaries: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+              skills: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                },
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
   AppCeruliaAuthCoreReader: {
     lexicon: 1,
     id: 'app.cerulia.authCoreReader',
@@ -29,6 +210,793 @@ export const schemaDict = {
         type: 'token',
         description:
           'OAuth scope bundle granting write access to all core records.',
+      },
+    },
+  },
+  AppCeruliaCampaignCreate: {
+    lexicon: 1,
+    id: 'app.cerulia.campaign.create',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create campaign.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['title', 'rulesetNsid'],
+            properties: {
+              title: {
+                type: 'string',
+                maxLength: 640,
+              },
+              rulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              houseRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              sharedRuleProfileRefs: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  format: 'at-uri',
+                },
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCampaignGetView: {
+    lexicon: 1,
+    id: 'app.cerulia.campaign.getView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get campaign owner/public projection.',
+        parameters: {
+          type: 'params',
+          required: ['campaignRef'],
+          properties: {
+            campaignRef: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['campaign'],
+            properties: {
+              campaign: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.campaign',
+              },
+              sessions: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.campaign.getView#sessionListItem',
+                },
+              },
+              ruleProfiles: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.core.ruleProfile',
+                },
+              },
+            },
+          },
+        },
+      },
+      sessionListItem: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          characterBranchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCampaignUpdate: {
+    lexicon: 1,
+    id: 'app.cerulia.campaign.update',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update campaign.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['campaignRef'],
+            properties: {
+              campaignRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              title: {
+                type: 'string',
+                maxLength: 640,
+              },
+              houseRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              rulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              sharedRuleProfileRefs: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  format: 'at-uri',
+                },
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+              archivedAt: {
+                type: 'string',
+                format: 'datetime',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterCreateBranch: {
+    lexicon: 1,
+    id: 'app.cerulia.character.createBranch',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create character branch.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['baseSheetRef', 'branchKind', 'branchLabel'],
+            properties: {
+              baseSheetRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              branchKind: {
+                type: 'string',
+                knownValues: ['campaign-fork', 'local-override'],
+              },
+              branchLabel: {
+                type: 'string',
+                maxLength: 640,
+              },
+              overridePayload: {
+                type: 'unknown',
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterCreateSheet: {
+    lexicon: 1,
+    id: 'app.cerulia.character.createSheet',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create character sheet.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['rulesetNsid', 'sheetSchemaRef', 'displayName'],
+            properties: {
+              rulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              sheetSchemaRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              displayName: {
+                type: 'string',
+                maxLength: 640,
+              },
+              portraitBlob: {
+                type: 'blob',
+              },
+              profileSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              stats: {
+                type: 'unknown',
+              },
+              initialBranchVisibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterGetBranchView: {
+    lexicon: 1,
+    id: 'app.cerulia.character.getBranchView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get character branch owner/public projection.',
+        parameters: {
+          type: 'params',
+          required: ['characterBranchRef'],
+          properties: {
+            characterBranchRef: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['branch', 'sheet'],
+            properties: {
+              branch: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.characterBranch',
+              },
+              sheet: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.characterSheet',
+              },
+              advancements: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.core.characterAdvancement',
+                },
+              },
+              conversions: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.core.characterConversion',
+                },
+              },
+              recentSessions: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getBranchView#sessionListItem',
+                },
+              },
+            },
+          },
+        },
+      },
+      sessionListItem: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterGetHome: {
+    lexicon: 1,
+    id: 'app.cerulia.character.getHome',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get owner character home projection.',
+        parameters: {
+          type: 'params',
+          properties: {},
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['ownerDid', 'branches'],
+            properties: {
+              ownerDid: {
+                type: 'string',
+                format: 'did',
+              },
+              branches: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getHome#branchListItem',
+                },
+              },
+              recentSessions: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.character.getHome#sessionListItem',
+                },
+              },
+            },
+          },
+        },
+      },
+      branchListItem: {
+        type: 'object',
+        required: [
+          'branchRef',
+          'branchLabel',
+          'baseSheetRef',
+          'branchKind',
+          'visibility',
+          'revision',
+        ],
+        properties: {
+          branchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          branchLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          baseSheetRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          branchKind: {
+            type: 'string',
+            knownValues: ['main', 'campaign-fork', 'local-override'],
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          revision: {
+            type: 'integer',
+            minimum: 1,
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      sessionListItem: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          characterBranchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterRebaseSheet: {
+    lexicon: 1,
+    id: 'app.cerulia.character.rebaseSheet',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Rebase character sheet to another schema.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [
+              'characterSheetRef',
+              'expectedVersion',
+              'targetSheetSchemaRef',
+            ],
+            properties: {
+              characterSheetRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              expectedVersion: {
+                type: 'integer',
+                minimum: 1,
+                description:
+                  'Version the client based the rebase on. Used to detect write conflicts and return rebase-needed.',
+              },
+              targetSheetSchemaRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              stats: {
+                type: 'unknown',
+              },
+              note: {
+                type: 'string',
+                maxLength: 3000,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterRecordAdvancement: {
+    lexicon: 1,
+    id: 'app.cerulia.character.recordAdvancement',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Record character advancement.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [
+              'characterBranchRef',
+              'advancementKind',
+              'deltaPayload',
+              'effectiveAt',
+            ],
+            properties: {
+              characterBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              advancementKind: {
+                type: 'string',
+                knownValues: [
+                  'xp-spend',
+                  'milestone',
+                  'retrain',
+                  'respec',
+                  'correction',
+                ],
+              },
+              deltaPayload: {
+                type: 'unknown',
+              },
+              effectiveAt: {
+                type: 'string',
+                format: 'datetime',
+              },
+              sessionRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              previousValues: {
+                type: 'unknown',
+              },
+              note: {
+                type: 'string',
+                maxLength: 3000,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterRecordConversion: {
+    lexicon: 1,
+    id: 'app.cerulia.character.recordConversion',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Record character conversion.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: [
+              'sourceSheetRef',
+              'sourceBranchRef',
+              'sourceRulesetNsid',
+              'targetSheetRef',
+              'targetBranchRef',
+              'targetRulesetNsid',
+              'convertedAt',
+            ],
+            properties: {
+              sourceSheetRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              sourceBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              sourceRulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              targetSheetRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              targetBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              targetRulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              convertedAt: {
+                type: 'string',
+                format: 'datetime',
+              },
+              conversionContractRef: {
+                type: 'string',
+                format: 'uri',
+              },
+              note: {
+                type: 'string',
+                maxLength: 3000,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterRetireBranch: {
+    lexicon: 1,
+    id: 'app.cerulia.character.retireBranch',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Retire character branch.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['characterBranchRef'],
+            properties: {
+              characterBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterUpdateBranch: {
+    lexicon: 1,
+    id: 'app.cerulia.character.updateBranch',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update character branch.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['characterBranchRef', 'expectedRevision'],
+            properties: {
+              characterBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              expectedRevision: {
+                type: 'integer',
+                minimum: 1,
+                description:
+                  'Revision the client based the edit on. Used to detect write conflicts and return rebase-needed.',
+              },
+              branchLabel: {
+                type: 'string',
+                maxLength: 640,
+              },
+              overridePayload: {
+                type: 'unknown',
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaCharacterUpdateSheet: {
+    lexicon: 1,
+    id: 'app.cerulia.character.updateSheet',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update character sheet.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['characterSheetRef', 'expectedVersion'],
+            properties: {
+              characterSheetRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              expectedVersion: {
+                type: 'integer',
+                minimum: 1,
+                description:
+                  'Version the client based the edit on. Used to detect write conflicts and return rebase-needed.',
+              },
+              displayName: {
+                type: 'string',
+                maxLength: 640,
+              },
+              portraitBlob: {
+                type: 'blob',
+              },
+              profileSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              stats: {
+                type: 'unknown',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
       },
     },
   },
@@ -937,203 +1905,9 @@ export const schemaDict = {
       },
     },
   },
-  AppCeruliaRpcCreateCampaign: {
+  AppCeruliaHouseCreate: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.createCampaign',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create campaign.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              title: {
-                type: 'string',
-                maxLength: 640,
-              },
-              rulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              houseRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              sharedRuleProfileRefs: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                  format: 'at-uri',
-                },
-              },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-            },
-            required: ['title', 'rulesetNsid'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcCreateCharacterBranch: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.createCharacterBranch',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create character branch.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              baseSheetRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              branchKind: {
-                type: 'string',
-                knownValues: ['campaign-fork', 'local-override'],
-              },
-              branchLabel: {
-                type: 'string',
-                maxLength: 640,
-              },
-              overridePayload: {
-                type: 'unknown',
-              },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-            },
-            required: ['baseSheetRef', 'branchKind', 'branchLabel'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcCreateCharacterSheet: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.createCharacterSheet',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create character sheet.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              rulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              sheetSchemaRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              displayName: {
-                type: 'string',
-                maxLength: 640,
-              },
-              portraitBlob: {
-                type: 'blob',
-              },
-              profileSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              stats: {
-                type: 'unknown',
-              },
-              initialBranchVisibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-            },
-            required: ['rulesetNsid', 'sheetSchemaRef', 'displayName'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcCreateCharacterSheetSchema: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.createCharacterSheetSchema',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create character sheet schema.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              baseRulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              schemaVersion: {
-                type: 'string',
-              },
-              title: {
-                type: 'string',
-                maxLength: 640,
-              },
-              fieldDefs: {
-                type: 'array',
-                items: {
-                  type: 'unknown',
-                },
-              },
-            },
-            required: [
-              'baseRulesetNsid',
-              'schemaVersion',
-              'title',
-              'fieldDefs',
-            ],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcCreateHouse: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.createHouse',
+    id: 'app.cerulia.house.create',
     defs: {
       main: {
         type: 'procedure',
@@ -1142,6 +1916,7 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
+            required: ['title'],
             properties: {
               title: {
                 type: 'string',
@@ -1171,7 +1946,6 @@ export const schemaDict = {
                 knownValues: ['draft', 'public'],
               },
             },
-            required: ['title'],
           },
         },
         output: {
@@ -1184,9 +1958,165 @@ export const schemaDict = {
       },
     },
   },
-  AppCeruliaRpcCreateRuleProfile: {
+  AppCeruliaHouseGetView: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.createRuleProfile',
+    id: 'app.cerulia.house.getView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get house owner/public projection.',
+        parameters: {
+          type: 'params',
+          required: ['houseRef'],
+          properties: {
+            houseRef: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['house'],
+            properties: {
+              house: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.house',
+              },
+              campaigns: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.house.getView#campaignListItem',
+                },
+              },
+              sessions: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.house.getView#sessionListItem',
+                },
+              },
+            },
+          },
+        },
+      },
+      campaignListItem: {
+        type: 'object',
+        required: ['campaignRef', 'title', 'rulesetNsid', 'visibility'],
+        properties: {
+          campaignRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+          updatedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+        },
+      },
+      sessionListItem: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaHouseUpdate: {
+    lexicon: 1,
+    id: 'app.cerulia.house.update',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update house.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['houseRef'],
+            properties: {
+              houseRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              title: {
+                type: 'string',
+                maxLength: 640,
+              },
+              canonSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              defaultRuleProfileRefs: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  format: 'at-uri',
+                },
+              },
+              policySummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              externalCommunityUri: {
+                type: 'string',
+                format: 'uri',
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaRuleCreateProfile: {
+    lexicon: 1,
+    id: 'app.cerulia.rule.createProfile',
     defs: {
       main: {
         type: 'procedure',
@@ -1195,6 +2125,13 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
+            required: [
+              'baseRulesetNsid',
+              'profileTitle',
+              'scopeKind',
+              'scopeRef',
+              'rulesPatchUri',
+            ],
             properties: {
               baseRulesetNsid: {
                 type: 'string',
@@ -1217,13 +2154,6 @@ export const schemaDict = {
                 format: 'uri',
               },
             },
-            required: [
-              'baseRulesetNsid',
-              'profileTitle',
-              'scopeKind',
-              'scopeRef',
-              'rulesPatchUri',
-            ],
           },
         },
         output: {
@@ -1236,117 +2166,42 @@ export const schemaDict = {
       },
     },
   },
-  AppCeruliaRpcCreateScenario: {
+  AppCeruliaRuleCreateSheetSchema: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.createScenario',
+    id: 'app.cerulia.rule.createSheetSchema',
     defs: {
       main: {
         type: 'procedure',
-        description: 'Create scenario.',
+        description: 'Create character sheet schema.',
         input: {
           encoding: 'application/json',
           schema: {
             type: 'object',
+            required: [
+              'baseRulesetNsid',
+              'schemaVersion',
+              'title',
+              'fieldDefs',
+            ],
             properties: {
+              baseRulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              schemaVersion: {
+                type: 'string',
+              },
               title: {
                 type: 'string',
                 maxLength: 640,
               },
-              rulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              recommendedSheetSchemaRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              sourceCitationUri: {
-                type: 'string',
-                format: 'uri',
-              },
-              summary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-            },
-            required: ['title'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcCreateSession: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.createSession',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Create session.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              role: {
-                type: 'string',
-                knownValues: ['pl', 'gm'],
-              },
-              playedAt: {
-                type: 'string',
-                format: 'datetime',
-              },
-              scenarioRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              scenarioLabel: {
-                type: 'string',
-                maxLength: 640,
-              },
-              characterBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              campaignRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              hoLabel: {
-                type: 'string',
-                maxLength: 640,
-              },
-              hoSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              outcomeSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              externalArchiveUris: {
+              fieldDefs: {
                 type: 'array',
                 items: {
-                  type: 'string',
-                  format: 'uri',
+                  type: 'unknown',
                 },
               },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-              note: {
-                type: 'string',
-                maxLength: 3000,
-              },
             },
-            required: ['role', 'playedAt'],
           },
         },
         output: {
@@ -1359,437 +2214,75 @@ export const schemaDict = {
       },
     },
   },
-  AppCeruliaRpcGetCampaignView: {
+  AppCeruliaRuleGetProfile: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.getCampaignView',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get campaign owner/public projection.',
-        parameters: {
-          type: 'params',
-          properties: {
-            campaignRef: {
-              type: 'string',
-              format: 'at-uri',
-            },
-          },
-          required: ['campaignRef'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getCampaignView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          campaign: {
-            type: 'unknown',
-          },
-          sessions: {
-            type: 'unknown',
-          },
-          ruleOverlay: {
-            type: 'unknown',
-          },
-          campaignSummary: {
-            type: 'unknown',
-          },
-          sessionSummaries: {
-            type: 'unknown',
-          },
-          ruleOverlaySummary: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetCharacterBranchView: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getCharacterBranchView',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get character branch owner/public projection.',
-        parameters: {
-          type: 'params',
-          properties: {
-            characterBranchRef: {
-              type: 'string',
-              format: 'at-uri',
-            },
-          },
-          required: ['characterBranchRef'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getCharacterBranchView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          branch: {
-            type: 'unknown',
-          },
-          sheet: {
-            type: 'unknown',
-          },
-          recentSessions: {
-            type: 'unknown',
-          },
-          advancements: {
-            type: 'unknown',
-          },
-          conversions: {
-            type: 'unknown',
-          },
-          branchSummary: {
-            type: 'unknown',
-          },
-          sheetSummary: {
-            type: 'unknown',
-          },
-          recentSessionSummaries: {
-            type: 'unknown',
-          },
-          advancementSummaries: {
-            type: 'unknown',
-          },
-          conversionSummaries: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetCharacterHome: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getCharacterHome',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get owner character home projection.',
-        parameters: {
-          type: 'params',
-          properties: {},
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getCharacterHome#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          ownerDid: {
-            type: 'unknown',
-          },
-          branches: {
-            type: 'unknown',
-          },
-          recentSessions: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetCharacterSheetSchema: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getCharacterSheetSchema',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get character sheet schema.',
-        parameters: {
-          type: 'params',
-          properties: {
-            characterSheetSchemaRef: {
-              type: 'string',
-              format: 'at-uri',
-            },
-          },
-          required: ['characterSheetSchemaRef'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getCharacterSheetSchema#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          characterSheetSchema: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetHouseView: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getHouseView',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get house owner/public projection.',
-        parameters: {
-          type: 'params',
-          properties: {
-            houseRef: {
-              type: 'string',
-              format: 'at-uri',
-            },
-          },
-          required: ['houseRef'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getHouseView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          house: {
-            type: 'unknown',
-          },
-          campaigns: {
-            type: 'unknown',
-          },
-          sessions: {
-            type: 'unknown',
-          },
-          houseSummary: {
-            type: 'unknown',
-          },
-          campaignSummaries: {
-            type: 'unknown',
-          },
-          sessionSummaries: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetPlayerProfileView: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getPlayerProfileView',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get player profile owner/public projection.',
-        parameters: {
-          type: 'params',
-          properties: {
-            did: {
-              type: 'string',
-              format: 'did',
-            },
-          },
-          required: ['did'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getPlayerProfileView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          profile: {
-            type: 'unknown',
-          },
-          blueskyFallbackProfile: {
-            type: 'unknown',
-          },
-          publicBranches: {
-            type: 'unknown',
-          },
-          profileSummary: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcGetRuleProfile: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.getRuleProfile',
+    id: 'app.cerulia.rule.getProfile',
     defs: {
       main: {
         type: 'query',
         description: 'Get rule profile.',
         parameters: {
           type: 'params',
+          required: ['ruleProfileRef'],
           properties: {
             ruleProfileRef: {
               type: 'string',
               format: 'at-uri',
             },
           },
-          required: ['ruleProfileRef'],
         },
         output: {
           encoding: 'application/json',
           schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getRuleProfile#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          ruleProfile: {
-            type: 'unknown',
+            type: 'object',
+            required: ['ruleProfile'],
+            properties: {
+              ruleProfile: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.ruleProfile',
+              },
+            },
           },
         },
       },
     },
   },
-  AppCeruliaRpcGetScenarioView: {
+  AppCeruliaRuleGetSheetSchema: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.getScenarioView',
+    id: 'app.cerulia.rule.getSheetSchema',
     defs: {
       main: {
         type: 'query',
-        description: 'Get scenario summary view.',
+        description: 'Get character sheet schema.',
         parameters: {
           type: 'params',
+          required: ['characterSheetSchemaRef'],
           properties: {
-            scenarioRef: {
+            characterSheetSchemaRef: {
               type: 'string',
               format: 'at-uri',
             },
           },
-          required: ['scenarioRef'],
         },
         output: {
           encoding: 'application/json',
           schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getScenarioView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          scenarioSummary: {
-            type: 'unknown',
+            type: 'object',
+            required: ['characterSheetSchema'],
+            properties: {
+              characterSheetSchema: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.characterSheetSchema',
+              },
+            },
           },
         },
       },
     },
   },
-  AppCeruliaRpcGetSessionView: {
+  AppCeruliaRuleListProfiles: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.getSessionView',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'Get session view.',
-        parameters: {
-          type: 'params',
-          properties: {
-            sessionRef: {
-              type: 'string',
-              format: 'at-uri',
-            },
-          },
-          required: ['sessionRef'],
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.getSessionView#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          session: {
-            type: 'unknown',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcListCharacterSheetSchemas: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.listCharacterSheetSchemas',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'List character sheet schemas.',
-        parameters: {
-          type: 'params',
-          properties: {
-            rulesetNsid: {
-              type: 'string',
-              format: 'nsid',
-            },
-            limit: {
-              type: 'integer',
-              minimum: 1,
-              maximum: 100,
-              default: 50,
-            },
-            cursor: {
-              type: 'string',
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.listCharacterSheetSchemas#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          items: {
-            type: 'unknown',
-          },
-          cursor: {
-            type: 'unknown',
-          },
-        },
-        required: ['items'],
-      },
-    },
-  },
-  AppCeruliaRpcListRuleProfiles: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.listRuleProfiles',
+    id: 'app.cerulia.rule.listProfiles',
     defs: {
       main: {
         type: 'query',
@@ -1819,28 +2312,245 @@ export const schemaDict = {
         output: {
           encoding: 'application/json',
           schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.listRuleProfiles#output',
+            type: 'object',
+            required: ['items'],
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.rule.listProfiles#ruleProfileListItem',
+                },
+              },
+              cursor: {
+                type: 'string',
+              },
+            },
           },
         },
       },
-      output: {
+      ruleProfileListItem: {
         type: 'object',
+        required: [
+          'ruleProfileRef',
+          'baseRulesetNsid',
+          'profileTitle',
+          'scopeKind',
+          'scopeRef',
+        ],
         properties: {
-          items: {
-            type: 'unknown',
+          ruleProfileRef: {
+            type: 'string',
+            format: 'at-uri',
           },
-          cursor: {
-            type: 'unknown',
+          baseRulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          profileTitle: {
+            type: 'string',
+            maxLength: 640,
+          },
+          scopeKind: {
+            type: 'string',
+            knownValues: ['house-shared', 'campaign-shared'],
+          },
+          scopeRef: {
+            type: 'string',
+            format: 'at-uri',
           },
         },
-        required: ['items'],
       },
     },
   },
-  AppCeruliaRpcListScenarios: {
+  AppCeruliaRuleListSheetSchemas: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.listScenarios',
+    id: 'app.cerulia.rule.listSheetSchemas',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'List character sheet schemas.',
+        parameters: {
+          type: 'params',
+          properties: {
+            rulesetNsid: {
+              type: 'string',
+              format: 'nsid',
+            },
+            limit: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 50,
+            },
+            cursor: {
+              type: 'string',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['items'],
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.rule.listSheetSchemas#sheetSchemaListItem',
+                },
+              },
+              cursor: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+      sheetSchemaListItem: {
+        type: 'object',
+        required: ['schemaRef', 'baseRulesetNsid', 'schemaVersion', 'title'],
+        properties: {
+          schemaRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          baseRulesetNsid: {
+            type: 'string',
+            format: 'nsid',
+          },
+          schemaVersion: {
+            type: 'string',
+          },
+          title: {
+            type: 'string',
+            maxLength: 640,
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaRuleUpdateProfile: {
+    lexicon: 1,
+    id: 'app.cerulia.rule.updateProfile',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Update rule profile.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['ruleProfileRef'],
+            properties: {
+              ruleProfileRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              profileTitle: {
+                type: 'string',
+                maxLength: 640,
+              },
+              rulesPatchUri: {
+                type: 'string',
+                format: 'uri',
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaScenarioCreate: {
+    lexicon: 1,
+    id: 'app.cerulia.scenario.create',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create scenario.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['title'],
+            properties: {
+              title: {
+                type: 'string',
+                maxLength: 640,
+              },
+              rulesetNsid: {
+                type: 'string',
+                format: 'nsid',
+              },
+              recommendedSheetSchemaRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              sourceCitationUri: {
+                type: 'string',
+                format: 'uri',
+              },
+              summary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaScenarioGetView: {
+    lexicon: 1,
+    id: 'app.cerulia.scenario.getView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get scenario summary view.',
+        parameters: {
+          type: 'params',
+          required: ['scenarioRef'],
+          properties: {
+            scenarioRef: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['scenario'],
+            properties: {
+              scenario: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.scenario',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaScenarioList: {
+    lexicon: 1,
+    id: 'app.cerulia.scenario.list',
     defs: {
       main: {
         type: 'query',
@@ -1866,612 +2576,50 @@ export const schemaDict = {
         output: {
           encoding: 'application/json',
           schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.listScenarios#output',
+            type: 'object',
+            required: ['items'],
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.scenario.list#scenarioListItem',
+                },
+              },
+              cursor: {
+                type: 'string',
+              },
+            },
           },
         },
       },
-      output: {
+      scenarioListItem: {
         type: 'object',
+        required: ['scenarioRef', 'title'],
         properties: {
-          items: {
-            type: 'unknown',
+          scenarioRef: {
+            type: 'string',
+            format: 'at-uri',
           },
-          cursor: {
-            type: 'unknown',
+          title: {
+            type: 'string',
+            maxLength: 640,
           },
-        },
-        required: ['items'],
-      },
-    },
-  },
-  AppCeruliaRpcListSessions: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.listSessions',
-    defs: {
-      main: {
-        type: 'query',
-        description: 'List sessions.',
-        parameters: {
-          type: 'params',
-          properties: {
-            limit: {
-              type: 'integer',
-              minimum: 1,
-              maximum: 100,
-              default: 50,
-            },
-            cursor: {
-              type: 'string',
-            },
+          rulesetNsid: {
+            type: 'string',
+            format: 'nsid',
           },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.rpc.listSessions#output',
-          },
-        },
-      },
-      output: {
-        type: 'object',
-        properties: {
-          items: {
-            type: 'unknown',
-          },
-          cursor: {
-            type: 'unknown',
-          },
-        },
-        required: ['items'],
-      },
-    },
-  },
-  AppCeruliaRpcRebaseCharacterSheet: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.rebaseCharacterSheet',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Rebase character sheet to another schema.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              characterSheetRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              targetSheetSchemaRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              stats: {
-                type: 'unknown',
-              },
-              note: {
-                type: 'string',
-                maxLength: 3000,
-              },
-            },
-            required: ['characterSheetRef', 'targetSheetSchemaRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
+          summary: {
+            type: 'string',
+            maxLength: 3000,
           },
         },
       },
     },
   },
-  AppCeruliaRpcRecordCharacterAdvancement: {
+  AppCeruliaScenarioUpdate: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.recordCharacterAdvancement',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Record character advancement.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              characterBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              advancementKind: {
-                type: 'string',
-                knownValues: [
-                  'xp-spend',
-                  'milestone',
-                  'retrain',
-                  'respec',
-                  'correction',
-                ],
-              },
-              deltaPayload: {
-                type: 'unknown',
-              },
-              effectiveAt: {
-                type: 'string',
-                format: 'datetime',
-              },
-              sessionRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              previousValues: {
-                type: 'unknown',
-              },
-              note: {
-                type: 'string',
-                maxLength: 3000,
-              },
-            },
-            required: [
-              'characterBranchRef',
-              'advancementKind',
-              'deltaPayload',
-              'effectiveAt',
-            ],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcRecordCharacterConversion: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.recordCharacterConversion',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Record character conversion.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              sourceSheetRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              sourceBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              sourceRulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              targetSheetRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              targetBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              targetRulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              convertedAt: {
-                type: 'string',
-                format: 'datetime',
-              },
-              conversionContractRef: {
-                type: 'string',
-                format: 'uri',
-              },
-              note: {
-                type: 'string',
-                maxLength: 3000,
-              },
-            },
-            required: [
-              'sourceSheetRef',
-              'sourceBranchRef',
-              'sourceRulesetNsid',
-              'targetSheetRef',
-              'targetBranchRef',
-              'targetRulesetNsid',
-              'convertedAt',
-            ],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcRetireCharacterBranch: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.retireCharacterBranch',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Retire character branch.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              characterBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-            },
-            required: ['characterBranchRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateCampaign: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateCampaign',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update campaign.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              campaignRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              title: {
-                type: 'string',
-                maxLength: 640,
-              },
-              houseRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              rulesetNsid: {
-                type: 'string',
-                format: 'nsid',
-              },
-              sharedRuleProfileRefs: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                  format: 'at-uri',
-                },
-              },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-              archivedAt: {
-                type: 'string',
-                format: 'datetime',
-              },
-            },
-            required: ['campaignRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateCharacterBranch: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateCharacterBranch',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update character branch.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              characterBranchRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              branchLabel: {
-                type: 'string',
-                maxLength: 640,
-              },
-              overridePayload: {
-                type: 'unknown',
-              },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-            },
-            required: ['characterBranchRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateCharacterSheet: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateCharacterSheet',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update character sheet.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              characterSheetRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              displayName: {
-                type: 'string',
-                maxLength: 640,
-              },
-              portraitBlob: {
-                type: 'blob',
-              },
-              profileSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              stats: {
-                type: 'unknown',
-              },
-            },
-            required: ['characterSheetRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateHouse: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateHouse',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update house.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              houseRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              title: {
-                type: 'string',
-                maxLength: 640,
-              },
-              canonSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              defaultRuleProfileRefs: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                  format: 'at-uri',
-                },
-              },
-              policySummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              externalCommunityUri: {
-                type: 'string',
-                format: 'uri',
-              },
-              visibility: {
-                type: 'string',
-                knownValues: ['draft', 'public'],
-              },
-            },
-            required: ['houseRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdatePlayerProfile: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updatePlayerProfile',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update player profile.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              blueskyProfileRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              displayNameOverride: {
-                type: 'string',
-                maxLength: 640,
-              },
-              descriptionOverride: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              avatarOverrideBlob: {
-                type: 'blob',
-              },
-              bannerOverrideBlob: {
-                type: 'blob',
-              },
-              websiteOverride: {
-                type: 'string',
-                format: 'uri',
-              },
-              pronounsOverride: {
-                type: 'string',
-                maxLength: 100,
-              },
-              roleDistribution: {
-                type: 'integer',
-                minimum: 0,
-                maximum: 100,
-              },
-              playFormats: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-              tools: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-              ownedRulebooks: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              playableTimeSummary: {
-                type: 'string',
-                maxLength: 3000,
-              },
-              preferredScenarioStyles: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-              playStyles: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-              boundaries: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-              skills: {
-                type: 'array',
-                items: {
-                  type: 'string',
-                },
-              },
-            },
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateRuleProfile: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateRuleProfile',
-    defs: {
-      main: {
-        type: 'procedure',
-        description: 'Update rule profile.',
-        input: {
-          encoding: 'application/json',
-          schema: {
-            type: 'object',
-            properties: {
-              ruleProfileRef: {
-                type: 'string',
-                format: 'at-uri',
-              },
-              profileTitle: {
-                type: 'string',
-                maxLength: 640,
-              },
-              rulesPatchUri: {
-                type: 'string',
-                format: 'uri',
-              },
-            },
-            required: ['ruleProfileRef'],
-          },
-        },
-        output: {
-          encoding: 'application/json',
-          schema: {
-            type: 'ref',
-            ref: 'lex:app.cerulia.defs#mutationAck',
-          },
-        },
-      },
-    },
-  },
-  AppCeruliaRpcUpdateScenario: {
-    lexicon: 1,
-    id: 'app.cerulia.rpc.updateScenario',
+    id: 'app.cerulia.scenario.update',
     defs: {
       main: {
         type: 'procedure',
@@ -2480,6 +2628,7 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
+            required: ['scenarioRef'],
             properties: {
               scenarioRef: {
                 type: 'string',
@@ -2506,7 +2655,6 @@ export const schemaDict = {
                 maxLength: 3000,
               },
             },
-            required: ['scenarioRef'],
           },
         },
         output: {
@@ -2519,9 +2667,192 @@ export const schemaDict = {
       },
     },
   },
-  AppCeruliaRpcUpdateSession: {
+  AppCeruliaSessionCreate: {
     lexicon: 1,
-    id: 'app.cerulia.rpc.updateSession',
+    id: 'app.cerulia.session.create',
+    defs: {
+      main: {
+        type: 'procedure',
+        description: 'Create session.',
+        input: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['role', 'playedAt'],
+            properties: {
+              role: {
+                type: 'string',
+                knownValues: ['pl', 'gm'],
+              },
+              playedAt: {
+                type: 'string',
+                format: 'datetime',
+              },
+              scenarioRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              scenarioLabel: {
+                type: 'string',
+                maxLength: 640,
+              },
+              characterBranchRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              campaignRef: {
+                type: 'string',
+                format: 'at-uri',
+              },
+              hoLabel: {
+                type: 'string',
+                maxLength: 640,
+              },
+              hoSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              outcomeSummary: {
+                type: 'string',
+                maxLength: 3000,
+              },
+              externalArchiveUris: {
+                type: 'array',
+                items: {
+                  type: 'string',
+                  format: 'uri',
+                },
+              },
+              visibility: {
+                type: 'string',
+                knownValues: ['draft', 'public'],
+              },
+              note: {
+                type: 'string',
+                maxLength: 3000,
+              },
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'ref',
+            ref: 'lex:app.cerulia.defs#mutationAck',
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaSessionGetView: {
+    lexicon: 1,
+    id: 'app.cerulia.session.getView',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'Get session view.',
+        parameters: {
+          type: 'params',
+          required: ['sessionRef'],
+          properties: {
+            sessionRef: {
+              type: 'string',
+              format: 'at-uri',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['session'],
+            properties: {
+              session: {
+                type: 'ref',
+                ref: 'lex:app.cerulia.core.session',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaSessionList: {
+    lexicon: 1,
+    id: 'app.cerulia.session.list',
+    defs: {
+      main: {
+        type: 'query',
+        description: 'List sessions.',
+        parameters: {
+          type: 'params',
+          properties: {
+            limit: {
+              type: 'integer',
+              minimum: 1,
+              maximum: 100,
+              default: 50,
+            },
+            cursor: {
+              type: 'string',
+            },
+          },
+        },
+        output: {
+          encoding: 'application/json',
+          schema: {
+            type: 'object',
+            required: ['items'],
+            properties: {
+              items: {
+                type: 'array',
+                items: {
+                  type: 'ref',
+                  ref: 'lex:app.cerulia.session.list#sessionListItem',
+                },
+              },
+              cursor: {
+                type: 'string',
+              },
+            },
+          },
+        },
+      },
+      sessionListItem: {
+        type: 'object',
+        required: ['sessionRef', 'role', 'playedAt', 'visibility'],
+        properties: {
+          sessionRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          role: {
+            type: 'string',
+            knownValues: ['pl', 'gm'],
+          },
+          playedAt: {
+            type: 'string',
+            format: 'datetime',
+          },
+          scenarioLabel: {
+            type: 'string',
+            maxLength: 640,
+          },
+          characterBranchRef: {
+            type: 'string',
+            format: 'at-uri',
+          },
+          visibility: {
+            type: 'string',
+            knownValues: ['draft', 'public'],
+          },
+        },
+      },
+    },
+  },
+  AppCeruliaSessionUpdate: {
+    lexicon: 1,
+    id: 'app.cerulia.session.update',
     defs: {
       main: {
         type: 'procedure',
@@ -2530,6 +2861,7 @@ export const schemaDict = {
           encoding: 'application/json',
           schema: {
             type: 'object',
+            required: ['sessionRef'],
             properties: {
               sessionRef: {
                 type: 'string',
@@ -2587,7 +2919,6 @@ export const schemaDict = {
                 maxLength: 3000,
               },
             },
-            required: ['sessionRef'],
           },
         },
         output: {
@@ -2633,8 +2964,24 @@ export function validate(
 }
 
 export const ids = {
+  AppCeruliaActorGetProfileView: 'app.cerulia.actor.getProfileView',
+  AppCeruliaActorUpdateProfile: 'app.cerulia.actor.updateProfile',
   AppCeruliaAuthCoreReader: 'app.cerulia.authCoreReader',
   AppCeruliaAuthCoreWriter: 'app.cerulia.authCoreWriter',
+  AppCeruliaCampaignCreate: 'app.cerulia.campaign.create',
+  AppCeruliaCampaignGetView: 'app.cerulia.campaign.getView',
+  AppCeruliaCampaignUpdate: 'app.cerulia.campaign.update',
+  AppCeruliaCharacterCreateBranch: 'app.cerulia.character.createBranch',
+  AppCeruliaCharacterCreateSheet: 'app.cerulia.character.createSheet',
+  AppCeruliaCharacterGetBranchView: 'app.cerulia.character.getBranchView',
+  AppCeruliaCharacterGetHome: 'app.cerulia.character.getHome',
+  AppCeruliaCharacterRebaseSheet: 'app.cerulia.character.rebaseSheet',
+  AppCeruliaCharacterRecordAdvancement:
+    'app.cerulia.character.recordAdvancement',
+  AppCeruliaCharacterRecordConversion: 'app.cerulia.character.recordConversion',
+  AppCeruliaCharacterRetireBranch: 'app.cerulia.character.retireBranch',
+  AppCeruliaCharacterUpdateBranch: 'app.cerulia.character.updateBranch',
+  AppCeruliaCharacterUpdateSheet: 'app.cerulia.character.updateSheet',
   AppCeruliaCoreCampaign: 'app.cerulia.core.campaign',
   AppCeruliaCoreCharacterAdvancement: 'app.cerulia.core.characterAdvancement',
   AppCeruliaCoreCharacterBranch: 'app.cerulia.core.characterBranch',
@@ -2647,42 +2994,22 @@ export const ids = {
   AppCeruliaCoreScenario: 'app.cerulia.core.scenario',
   AppCeruliaCoreSession: 'app.cerulia.core.session',
   AppCeruliaDefs: 'app.cerulia.defs',
-  AppCeruliaRpcCreateCampaign: 'app.cerulia.rpc.createCampaign',
-  AppCeruliaRpcCreateCharacterBranch: 'app.cerulia.rpc.createCharacterBranch',
-  AppCeruliaRpcCreateCharacterSheet: 'app.cerulia.rpc.createCharacterSheet',
-  AppCeruliaRpcCreateCharacterSheetSchema:
-    'app.cerulia.rpc.createCharacterSheetSchema',
-  AppCeruliaRpcCreateHouse: 'app.cerulia.rpc.createHouse',
-  AppCeruliaRpcCreateRuleProfile: 'app.cerulia.rpc.createRuleProfile',
-  AppCeruliaRpcCreateScenario: 'app.cerulia.rpc.createScenario',
-  AppCeruliaRpcCreateSession: 'app.cerulia.rpc.createSession',
-  AppCeruliaRpcGetCampaignView: 'app.cerulia.rpc.getCampaignView',
-  AppCeruliaRpcGetCharacterBranchView: 'app.cerulia.rpc.getCharacterBranchView',
-  AppCeruliaRpcGetCharacterHome: 'app.cerulia.rpc.getCharacterHome',
-  AppCeruliaRpcGetCharacterSheetSchema:
-    'app.cerulia.rpc.getCharacterSheetSchema',
-  AppCeruliaRpcGetHouseView: 'app.cerulia.rpc.getHouseView',
-  AppCeruliaRpcGetPlayerProfileView: 'app.cerulia.rpc.getPlayerProfileView',
-  AppCeruliaRpcGetRuleProfile: 'app.cerulia.rpc.getRuleProfile',
-  AppCeruliaRpcGetScenarioView: 'app.cerulia.rpc.getScenarioView',
-  AppCeruliaRpcGetSessionView: 'app.cerulia.rpc.getSessionView',
-  AppCeruliaRpcListCharacterSheetSchemas:
-    'app.cerulia.rpc.listCharacterSheetSchemas',
-  AppCeruliaRpcListRuleProfiles: 'app.cerulia.rpc.listRuleProfiles',
-  AppCeruliaRpcListScenarios: 'app.cerulia.rpc.listScenarios',
-  AppCeruliaRpcListSessions: 'app.cerulia.rpc.listSessions',
-  AppCeruliaRpcRebaseCharacterSheet: 'app.cerulia.rpc.rebaseCharacterSheet',
-  AppCeruliaRpcRecordCharacterAdvancement:
-    'app.cerulia.rpc.recordCharacterAdvancement',
-  AppCeruliaRpcRecordCharacterConversion:
-    'app.cerulia.rpc.recordCharacterConversion',
-  AppCeruliaRpcRetireCharacterBranch: 'app.cerulia.rpc.retireCharacterBranch',
-  AppCeruliaRpcUpdateCampaign: 'app.cerulia.rpc.updateCampaign',
-  AppCeruliaRpcUpdateCharacterBranch: 'app.cerulia.rpc.updateCharacterBranch',
-  AppCeruliaRpcUpdateCharacterSheet: 'app.cerulia.rpc.updateCharacterSheet',
-  AppCeruliaRpcUpdateHouse: 'app.cerulia.rpc.updateHouse',
-  AppCeruliaRpcUpdatePlayerProfile: 'app.cerulia.rpc.updatePlayerProfile',
-  AppCeruliaRpcUpdateRuleProfile: 'app.cerulia.rpc.updateRuleProfile',
-  AppCeruliaRpcUpdateScenario: 'app.cerulia.rpc.updateScenario',
-  AppCeruliaRpcUpdateSession: 'app.cerulia.rpc.updateSession',
+  AppCeruliaHouseCreate: 'app.cerulia.house.create',
+  AppCeruliaHouseGetView: 'app.cerulia.house.getView',
+  AppCeruliaHouseUpdate: 'app.cerulia.house.update',
+  AppCeruliaRuleCreateProfile: 'app.cerulia.rule.createProfile',
+  AppCeruliaRuleCreateSheetSchema: 'app.cerulia.rule.createSheetSchema',
+  AppCeruliaRuleGetProfile: 'app.cerulia.rule.getProfile',
+  AppCeruliaRuleGetSheetSchema: 'app.cerulia.rule.getSheetSchema',
+  AppCeruliaRuleListProfiles: 'app.cerulia.rule.listProfiles',
+  AppCeruliaRuleListSheetSchemas: 'app.cerulia.rule.listSheetSchemas',
+  AppCeruliaRuleUpdateProfile: 'app.cerulia.rule.updateProfile',
+  AppCeruliaScenarioCreate: 'app.cerulia.scenario.create',
+  AppCeruliaScenarioGetView: 'app.cerulia.scenario.getView',
+  AppCeruliaScenarioList: 'app.cerulia.scenario.list',
+  AppCeruliaScenarioUpdate: 'app.cerulia.scenario.update',
+  AppCeruliaSessionCreate: 'app.cerulia.session.create',
+  AppCeruliaSessionGetView: 'app.cerulia.session.getView',
+  AppCeruliaSessionList: 'app.cerulia.session.list',
+  AppCeruliaSessionUpdate: 'app.cerulia.session.update',
 } as const

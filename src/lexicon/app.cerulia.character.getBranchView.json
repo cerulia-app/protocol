@@ -1,0 +1,84 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.character.getBranchView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get character branch owner/public projection.",
+      "parameters": {
+        "type": "params",
+        "required": ["characterBranchRef"],
+        "properties": {
+          "characterBranchRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["branch", "sheet"],
+          "properties": {
+            "branch": {
+              "type": "ref",
+              "ref": "app.cerulia.core.characterBranch"
+            },
+            "sheet": {
+              "type": "ref",
+              "ref": "app.cerulia.core.characterSheet"
+            },
+            "advancements": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "app.cerulia.core.characterAdvancement"
+              }
+            },
+            "conversions": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "app.cerulia.core.characterConversion"
+              }
+            },
+            "recentSessions": {
+              "type": "array",
+              "items": {
+                "type": "ref",
+                "ref": "#sessionListItem"
+              }
+            }
+          }
+        }
+      }
+    },
+    "sessionListItem": {
+      "type": "object",
+      "required": ["sessionRef", "role", "playedAt", "visibility"],
+      "properties": {
+        "sessionRef": {
+          "type": "string",
+          "format": "at-uri"
+        },
+        "role": {
+          "type": "string",
+          "knownValues": ["pl", "gm"]
+        },
+        "playedAt": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "scenarioLabel": {
+          "type": "string",
+          "maxLength": 640
+        },
+        "visibility": {
+          "type": "string",
+          "knownValues": ["draft", "public"]
+        }
+      }
+    }
+  }
+}

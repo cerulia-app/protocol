@@ -1,0 +1,33 @@
+{
+  "lexicon": 1,
+  "id": "app.cerulia.scenario.getView",
+  "defs": {
+    "main": {
+      "type": "query",
+      "description": "Get scenario summary view.",
+      "parameters": {
+        "type": "params",
+        "required": ["scenarioRef"],
+        "properties": {
+          "scenarioRef": {
+            "type": "string",
+            "format": "at-uri"
+          }
+        }
+      },
+      "output": {
+        "encoding": "application/json",
+        "schema": {
+          "type": "object",
+          "required": ["scenario"],
+          "properties": {
+            "scenario": {
+              "type": "ref",
+              "ref": "app.cerulia.core.scenario"
+            }
+          }
+        }
+      }
+    }
+  }
+}
