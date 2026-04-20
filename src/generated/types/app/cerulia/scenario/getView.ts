@@ -46,6 +46,7 @@ export interface ScenarioSummary {
   scenarioRef: string
   title: string
   rulesetNsid?: string
+  hasRecommendedSheetSchema: boolean
   summary?: string
   sourceCitationUri?: string
 }

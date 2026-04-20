@@ -47,6 +47,7 @@ export interface ScenarioListItem {
   scenarioRef: string
   title: string
   rulesetNsid?: string
+  hasRecommendedSheetSchema: boolean
   summary?: string
 }
 

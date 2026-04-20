@@ -538,6 +538,13 @@ export const schemaDict = {
             type: 'string',
             maxLength: 3000,
           },
+          externalArchiveUris: {
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'uri',
+            },
+          },
         },
       },
       ruleOverlaySummary: {
@@ -2780,6 +2787,13 @@ export const schemaDict = {
             type: 'string',
             maxLength: 3000,
           },
+          externalArchiveUris: {
+            type: 'array',
+            items: {
+              type: 'string',
+              format: 'uri',
+            },
+          },
         },
       },
     },
@@ -3284,7 +3298,7 @@ export const schemaDict = {
       },
       scenarioSummary: {
         type: 'object',
-        required: ['scenarioRef', 'title'],
+        required: ['scenarioRef', 'title', 'hasRecommendedSheetSchema'],
         properties: {
           scenarioRef: {
             type: 'string',
@@ -3297,6 +3311,9 @@ export const schemaDict = {
           rulesetNsid: {
             type: 'string',
             format: 'nsid',
+          },
+          hasRecommendedSheetSchema: {
+            type: 'boolean',
           },
           summary: {
             type: 'string',
@@ -3357,7 +3374,7 @@ export const schemaDict = {
       },
       scenarioListItem: {
         type: 'object',
-        required: ['scenarioRef', 'title'],
+        required: ['scenarioRef', 'title', 'hasRecommendedSheetSchema'],
         properties: {
           scenarioRef: {
             type: 'string',
@@ -3370,6 +3387,9 @@ export const schemaDict = {
           rulesetNsid: {
             type: 'string',
             format: 'nsid',
+          },
+          hasRecommendedSheetSchema: {
+            type: 'boolean',
           },
           summary: {
             type: 'string',

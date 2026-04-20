@@ -65,7 +65,14 @@
         "scenarioLabel": { "type": "string", "maxLength": 640 },
         "hoLabel": { "type": "string", "maxLength": 640 },
         "hoSummary": { "type": "string", "maxLength": 3000 },
-        "outcomeSummary": { "type": "string", "maxLength": 3000 }
+        "outcomeSummary": { "type": "string", "maxLength": 3000 },
+        "externalArchiveUris": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
       }
     },
     "ruleOverlaySummary": {

@@ -45,7 +45,7 @@
     },
     "scenarioListItem": {
       "type": "object",
-      "required": ["scenarioRef", "title"],
+      "required": ["scenarioRef", "title", "hasRecommendedSheetSchema"],
       "properties": {
         "scenarioRef": {
           "type": "string",
@@ -58,6 +58,9 @@
         "rulesetNsid": {
           "type": "string",
           "format": "nsid"
+        },
+        "hasRecommendedSheetSchema": {
+          "type": "boolean"
         },
         "summary": {
           "type": "string",
