@@ -538,13 +538,6 @@ export const schemaDict = {
             type: 'string',
             maxLength: 3000,
           },
-          externalArchiveUris: {
-            type: 'array',
-            items: {
-              type: 'string',
-              format: 'uri',
-            },
-          },
         },
       },
       ruleOverlaySummary: {
@@ -2786,13 +2779,6 @@ export const schemaDict = {
           outcomeSummary: {
             type: 'string',
             maxLength: 3000,
-          },
-          externalArchiveUris: {
-            type: 'array',
-            items: {
-              type: 'string',
-              format: 'uri',
-            },
           },
         },
       },

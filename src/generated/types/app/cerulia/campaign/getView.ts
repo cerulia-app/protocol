@@ -99,7 +99,6 @@ export interface SessionSummary {
   hoLabel?: string
   hoSummary?: string
   outcomeSummary?: string
-  externalArchiveUris?: string[]
 }
 
 const hashSessionSummary = 'sessionSummary'
